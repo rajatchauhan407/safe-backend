@@ -11,6 +11,7 @@ import cors from 'cors';
 =============================================*/
 import connectToMongoDB from './utils/connectDB.js';
 import {corsOptions} from './config/cors.js';
+import logger from './utils/logger/logger.js';
 
 // Load environment variables
 dotenv.config();
@@ -49,12 +50,13 @@ setUpMiddlewares():void {
     public setRoutes():void {
         this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
             res.send('Hello World');
-        });
+    });
     }
 
   // error handler
     private errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
       // console.error(err.stack);
+      logger.error(err.stack);
       res.status(500).json({ error: 'Something went wrong!' });
     }
 
@@ -62,12 +64,15 @@ setUpMiddlewares():void {
     public async startServer(port:number):Promise<void> {
         try{
           // await connectToMongoDB();
-          this.app.listen(port, () => {
-              console.log(`Server is running on port ${port}`);
+          this.app.listen(port, () => 
+          {     
+              logger.warn(
+            'checking'
+              )
+              logger.info(`Server is running on port ${port}`);
           });
         }catch(error){
-            console.log(error);
-            
+            logger.error(`Error: ${error}`);  
         }
         
     }
