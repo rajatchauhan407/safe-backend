@@ -1,12 +1,17 @@
 {
     "compilerOptions": {
+      "baseUrl": "./",
       "target": "es6",
       "module": "es6",
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
       "outDir": "dist",
-      "forceConsistentCasingInFileNames": true
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node",
+      "paths":{
+        "*": ["node_modules/*"]
+      }
     }
 }
   
