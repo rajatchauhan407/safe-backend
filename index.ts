@@ -12,7 +12,7 @@ import cors from 'cors';
 import connectToMongoDB from './utils/connectDB.js';
 import {corsOptions} from './config/cors.js';
 import logger from './utils/logger/logger.js';
-
+import userInfo from './utils/logger/userInfo.js';
 // Load environment variables
 dotenv.config();
 
@@ -63,20 +63,28 @@ setUpMiddlewares():void {
 // start server 
     public async startServer(port:number):Promise<void> {
         try{
-          // await connectToMongoDB();
+          await connectToMongoDB();
           this.app.listen(port, () => 
           {     
               logger.warn(
             'checking'
               )
-              logger.info(`Server is running on port ${port}`);
+              if(process.env.NODE_ENV === 'development'){
+                logger.info(`Server is running on port ${port} and the user is ${userInfo.user}`);
+              }else{
+                logger.info(`Server is running on port ${port}`);
+              }
           });
         }catch(error){
-            logger.error(`Error: ${error}`);  
-        }
+            if(process.env.NODE_ENV === 'development'){
+              logger.error(`Error: ${error} and the use is ${userInfo.user}`);
+            }else{
+                logger.error(`Error: ${error}`);
+            }
         
     }
 } 
+}
 
 const server = new Server();
 const PORT = server.setPort();
