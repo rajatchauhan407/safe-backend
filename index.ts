@@ -13,6 +13,7 @@ import connectToMongoDB from './utils/connectDB.js';
 import {corsOptions} from './config/cors.js';
 import logger from './utils/logger/logger.js';
 import userInfo from './utils/logger/userInfo.js';
+
 // Load environment variables
 dotenv.config();
 
