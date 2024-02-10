@@ -1,7 +1,7 @@
 module.exports ={ 
   apps:[
     {
-      name: 'eco-backend',
+      name: 'safe-backend',
       script: 'index.js',
       instances: 1,
       autorestart: true, // Enable automatic restart
