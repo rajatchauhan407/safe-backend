@@ -1,14 +1,10 @@
 import { Document } from "mongoose";
+import { Role } from "../enums/role.enum";
 
 
-enum UserRole{
-    ADMIN = "admin",
-    WORKER = "worker",
-    USER = "user"
-}
 export interface IChecking extends Document {
-    userType: UserRole,
+    userType: Role,
     userId: string,
     constructionSiteId: string,
-    timeStamps: Date,
+    timeStamp: Date
 }

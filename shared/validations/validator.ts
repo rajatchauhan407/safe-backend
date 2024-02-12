@@ -36,6 +36,11 @@ class SafeValidator {
 
     return regex.test(address);
   }
+
+  // validate userType so that it is either worker or supervisor
+  static validateUserType(userType: string): boolean {
+    return userType === 'worker' || userType === 'supervisor' || userType === 'admin';
+  }
 }
 
 export default SafeValidator;
