@@ -27,10 +27,6 @@ class Server {
         this.setUpMiddlewares();
         this.setRoutes();
     }
-// connection to the database
-    public connectToMongoDB():void {
-        connectToMongoDB();
-    }
 
 // setting up middlewares
 setUpMiddlewares():void {
@@ -78,7 +74,7 @@ setUpMiddlewares():void {
           });
         }catch(error){
             if(process.env.NODE_ENV === 'development'){
-              logger.error(`Error: ${error} and the use is ${userInfo.user}`);
+              logger.error(`Error: ${error} and the user is ${userInfo.user}`);
             }else{
                 logger.error(`Error: ${error}`);
             }
