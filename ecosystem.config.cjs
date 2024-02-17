@@ -2,7 +2,7 @@ module.exports ={
   apps:[
     {
       name: 'safe-backend',
-      script: 'index.js',
+      script: 'dist/index.js',
       instances: 1,
       autorestart: true, // Enable automatic restart
       watch: true, // Watching for file changes (optional)
