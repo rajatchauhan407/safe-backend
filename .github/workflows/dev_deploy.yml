@@ -1,0 +1,47 @@
+name: Build and Deploy TypeScript Project
+
+on:
+  push:
+    branches:
+      - dev  # or your development branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.14.0'  # or your Node.js version
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build TypeScript
+      run: npm run build  # Assumes "build" script in package.json compiles TypeScript
+
+    - name: Deploy to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SAFE_PRIVATE_KEY }}
+        port: 22
+        source: "dist/*"  # Adjust based on your dist structure
+        target: "/home/ubuntu/safe_dev"
+
+    - name: Execute remote commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SAFE_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /home/ubuntu/safe_dev
+          pm2 start ecosystem.config.js
+          # Any post-deployment commands here, like restarting your service
