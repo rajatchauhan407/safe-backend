@@ -43,5 +43,5 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/safe_dev
-          pm2 start ecosystem.config.js
+          pm2 start ecosystem.config.cjs
           # Any post-deployment commands here, like restarting your service
