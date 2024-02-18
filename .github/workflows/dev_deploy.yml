@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Build TypeScript
-      run: npm run build  # Assumes "build" script in package.json compiles TypeScript
+      run: npm run build:prod  # "build" script in package.json compiles TypeScript
 
     - name: Deploy to Server
       uses: appleboy/scp-action@master
