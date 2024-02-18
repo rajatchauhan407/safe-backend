@@ -32,7 +32,7 @@ jobs:
         key: ${{ secrets.SAFE_PRIVATE_KEY }}
         port: 22
         source: "dist/*"  # Adjust based on your dist structure
-        target: "/home/ubuntu/safe_dev"
+        target: "/home/ubuntu/safe_dev/"
 
     - name: Execute remote commands
       uses: appleboy/ssh-action@master
@@ -43,5 +43,6 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/safe_dev
+          npm install
           pm2 start ecosystem.config.cjs
           # Any post-deployment commands here, like restarting your service
