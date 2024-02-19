@@ -43,6 +43,6 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/safe_dev/dist
-          npm install
-          pm2 start ecosystem.config.cjs
+          /home/ubuntu/.nvm/versions/node/v18.14.0/bin/npm install
+          /home/ubuntu/.nvm/versions/node/v18.14.0/bin/pm2 start ecosystem.config.cjs
           # Any post-deployment commands here, like restarting your service
