@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "dev": "concurrently \"nodemon dist/index.js\" \"npm run build\"",
     "build": "tsc -w",
-    "build:prod": "tsc && cp package.json dist/",
+    "build:prod": "tsc && cp package.json dist/ && cp ecosystem.config.cjs dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
