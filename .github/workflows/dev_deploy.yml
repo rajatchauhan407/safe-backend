@@ -42,7 +42,7 @@ jobs:
         key: ${{ secrets.SAFE_PRIVATE_KEY }}
         port: 22
         script: |
-          cd /home/ubuntu/safe_dev
+          cd /home/ubuntu/safe_dev/dist
           npm install
           pm2 start ecosystem.config.cjs
           # Any post-deployment commands here, like restarting your service
