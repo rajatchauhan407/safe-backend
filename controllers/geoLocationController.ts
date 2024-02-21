@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import { Request, Response, NextFunction } from "express";
-=======
->>>>>>> fa2c67207e8665db9d513517f5ad64802133d844
 import Express from "express";
 const app = Express();
 
