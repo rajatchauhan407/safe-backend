@@ -49,8 +49,7 @@ setUpMiddlewares():void {
         this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
             res.send('Hello World');           
     });
-    this.app.use(GeoLocationRoutes);
-  
+    this.app.use(GeoLocationRoutes)
     }
 
   // error handler

@@ -1,10 +1,8 @@
 import Express from "express";
 
 const router = Express.Router();
-import {
-  test
-} from "../controllers/geoLocationController";
+import {checkInUser} from '../controllers/geoLocationController.js'
 
-router.get("/test",test);
+router.get("/checkInUser",checkInUser)
 
 export default router;
