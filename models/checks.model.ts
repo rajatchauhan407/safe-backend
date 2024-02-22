@@ -11,6 +11,10 @@ const checksSchema = new Schema<IChecking>({
             message: "User type must be either worker or supervisor"
         }
     },
+    checkType: {
+        type: String,
+        required: true
+    },
     userId: {
         type: String,
         required: true,

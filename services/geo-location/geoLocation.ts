@@ -1,5 +1,6 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
+import CheckingModel from "../../models/checks.model.js";
 class GeoLocation {
 
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
@@ -16,7 +17,15 @@ class GeoLocation {
       const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], constructionSiteLocation.radius);
 
       if (isWithinRadius) {
-        // If the location is within the radius, return a success message
+        // If the location is within the radius, do check in & return a success message
+        const checkIn = new CheckingModel({
+          userType: "worker", 
+          checkType: "check-in", 
+          userId: workerId,
+          constructionSiteId: siteId,
+          timeStamp: new Date() 
+        });     
+        await checkIn.save();
         return { message: "check in successful" };
       } else {
         // If the location is outside the radius, return an error message

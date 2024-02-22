@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*=============================================
 =            import external modules          =
 =============================================*/
@@ -88,3 +89,8 @@ setUpMiddlewares():void {
 const server = new Server();
 const PORT = server.setPort();
 server.startServer(PORT);
+=======
+import express, { Application } from 'express';
+const app:Application = express();
+
+>>>>>>> 9c4a239fe65c02c7fc2f295c54d04f046299f65d

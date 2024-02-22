@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import Express from "express";
 const app = Express();
-import GeoLocation from '../services/geo-location/geoLocation.js'; // Importing the GeoLocation class
-const geo = new GeoLocation(); // Creating an instance of GeoLocation
+import GeoLocation from '../services/geo-location/geoLocation.js'; 
+const geo = new GeoLocation(); 
 
 export async function checkInUser(req: Request, res: Response, next: NextFunction) {
     let data = req.body;
