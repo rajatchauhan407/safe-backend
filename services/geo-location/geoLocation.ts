@@ -5,7 +5,6 @@ class GeoLocation {
 
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
     try {
-      console.log(userLocation,siteId,workerId);
       const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);
              
       if ('error' in constructionSiteLocation) {
@@ -18,30 +17,66 @@ class GeoLocation {
 
       if (isWithinRadius) {
         // If the location is within the radius, do check in & return a success message
-        const checkIn = new CheckingModel({
-          userType: "worker", 
-          checkType: "check-in", 
-          userId: workerId,
-          constructionSiteId: siteId,
-          timeStamp: new Date() 
-        });     
-        await checkIn.save();
+          // Check if worker data exists
+          const workerData = await CheckingModel.findOne({
+            userType: "worker",
+            userId: workerId,
+            constructionSiteId: siteId
+          });
+
+          if (workerData) {
+            // If worker data exists, update checkType and timeStamp
+            workerData.checkType = "check-in"; 
+            workerData.timeStamp = new Date(); 
+            await workerData.save(); 
+          } else {
+            // If worker data doesn't exist, insert new data
+            const checkIn = new CheckingModel({
+                userType: "worker",
+                checkType: "check-in",
+                userId: workerId,
+                constructionSiteId: siteId,
+                timeStamp: new Date() 
+            });     
+            await checkIn.save(); 
+          }
         return { message: "check in successful" };
       } else {
         // If the location is outside the radius, return an error message
-        return { message: "Location is too far from the construction site" };
+        return { message: "Please be on site while check-in" };
       }
     } catch (error) {
             return {"error": error}
       }
   }
 
-  async checkOutUser(location: Object, siteId: string, workerId: string): Promise<Object> {
+  async checkOutUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
     try {
-      console.log(location,siteId,workerId);
-      const constructionSiteLocation = await this.getLocationOfConstructionSite(siteId);
-        
-      return {"messsage": "check out succesful" };
+      // console.log(location,siteId,workerId);
+      // const constructionSiteLocation = await this.getLocationOfConstructionSite(siteId);
+      const workerData = await CheckingModel.findOne({
+        userType: "worker",
+        userId: workerId,
+        constructionSiteId: siteId
+      });
+
+      if (workerData) {
+        // If worker data exists, update checkType and timeStamp
+        workerData.checkType = "check-out"; 
+        workerData.timeStamp = new Date(); 
+        await workerData.save(); 
+      } else {
+        // If worker data doesn't exist, insert new data
+        const checkOut = new CheckingModel({
+            userType: "worker",
+            checkType: "check-out",
+            userId: workerId,
+            constructionSiteId: siteId,
+            timeStamp: new Date() 
+        });     
+        await checkOut.save(); // Save the new document
+      }
+     return { message: "check out successful" };    
     } catch (error) {
           return {"error": error}
     }

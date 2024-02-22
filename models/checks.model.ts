@@ -1,5 +1,5 @@
 import {model, Schema} from "mongoose";
-import SafeValidator from "../shared/validations/validator";
+import SafeValidator from "../shared/validations/validator.js";
 import { IChecking } from "../shared/interfaces/checks.interface";
 
 const checksSchema = new Schema<IChecking>({
