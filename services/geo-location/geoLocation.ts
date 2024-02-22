@@ -12,6 +12,17 @@ class GeoLocation {
           }
     }
 
+    async checkOutUser(location: Object, siteId: String, workerId: String): Promise<Object> {
+      try {
+          console.log(location,siteId,workerId);
+          const constructionSiteLocation = await this.getLocationOfConstructionSite(siteId);
+        
+          return {"messsage": "check out succesful" };
+        } catch (error) {
+          return {"error": error}
+        }
+  }
+
     async getLocationOfConstructionSite(siteId: String): Promise<Object> {
         try {
             const location = await ConstructionSite.find({

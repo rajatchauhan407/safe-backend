@@ -16,4 +16,16 @@ export async function checkInUser(req: Request, res: Response, next: NextFunctio
     }
 }
 
+export async function checkOutUser(req: Request, res: Response, next: NextFunction) {
+    let data = req.body;
+    try {
+        console.log(data.location);
+        const result = await geo.checkOutUser(data.location, data.siteId, data.workerId);
+        res.json(result);
+    } catch (error) {
+        console.error("Error occurred:", error);
+        res.status(500).json({ error: error });
+    }
+}
+
 
