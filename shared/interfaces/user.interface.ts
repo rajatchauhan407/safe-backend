@@ -14,4 +14,5 @@ export interface IUser extends Document{
     emergencyPhoneNumber?: string;
     bloodType?: string;
     medicalInfo?: string;
+    salt?: string;
 }
