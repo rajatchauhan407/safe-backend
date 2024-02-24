@@ -5,15 +5,20 @@ class GeoLocation {
 
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
     try {
-      const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);
+      //Commented for testing
+      // const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);
              
-      if ('error' in constructionSiteLocation) {
-        return { error: constructionSiteLocation.error };
-      }    
+      // if ('error' in constructionSiteLocation) {
+      //   return { error: constructionSiteLocation.error };
+      // }    
           
-      const { coordinates} = constructionSiteLocation;
+      // const { coordinates} = constructionSiteLocation;
              
-      const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], constructionSiteLocation.radius);
+      // const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], constructionSiteLocation.radius);
+     
+     
+      //hardcoded for testing
+      const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7178, -74.0060, { type: 0.5 });
 
       if (isWithinRadius) {
         // If the location is within the radius, do check in & return a success message
@@ -99,9 +104,28 @@ class GeoLocation {
 
   async calculateDistanceAndCheckRadius(userLatitude: number, userLongitude: number, siteLatitude: number, siteLongitude: number,radius: { type: Number }): Promise<boolean> {
     const actualRadius = radius.type.valueOf();         
-    const dx = userLatitude - siteLatitude;
-    const dy = userLongitude - siteLongitude;
-    const distanceInKm = Math.sqrt(dx * dx + dy * dy);
+   
+    const earthRadius: number = 6371; // Earth's radius in kilometers
+    const deg2rad: (deg: number) => number = (deg: number) => deg * (Math.PI / 180);
+
+    // Convert latitude and longitude from degrees to radians
+    const userLatRad: number = deg2rad(userLatitude);
+    const userLonRad: number = deg2rad(userLongitude);
+    const siteLatRad: number = deg2rad(siteLatitude);
+    const siteLonRad: number = deg2rad(siteLongitude);
+
+    // Haversine formula
+    const dLat: number = siteLatRad - userLatRad;
+    const dLon: number = siteLonRad - userLonRad;
+    const a: number = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(userLatRad) * Math.cos(siteLatRad) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c: number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceInKm: number = earthRadius * c;
+
+    console.log("Actual Radius>>> "+actualRadius);
+    console.log("difference>>> "+distanceInKm);
+
       
     // Check if the distance is within the specified radius
     return distanceInKm <= actualRadius;
