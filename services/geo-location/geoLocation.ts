@@ -6,19 +6,19 @@ class GeoLocation {
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
     try {
       //Commented for testing
-      // const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);
-             
+      // const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);             
       // if ('error' in constructionSiteLocation) {
       //   return { error: constructionSiteLocation.error };
-      // }    
-          
-      // const { coordinates} = constructionSiteLocation;
-             
+      // }              
+      // const { coordinates} = constructionSiteLocation;             
       // const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], constructionSiteLocation.radius);
      
      
-      //hardcoded for testing
-      const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7178, -74.0060, { type: 0.5 });
+      //hardcoded for testing - when the diff is more than 0.5 km
+      //const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7178, -74.0060, { type: 0.5 });
+
+       //hardcoded for testing - when the diff is within 0.5 km
+       const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7168, -74.0061, { type: 0.5 });
 
       if (isWithinRadius) {
         // If the location is within the radius, do check in & return a success message
