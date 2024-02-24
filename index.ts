@@ -11,7 +11,7 @@ import cors from 'cors';
 =============================================*/
 import connectToMongoDB from './utils/connectDB.js';
 import {corsOptions} from './config/cors.js';
-import logger from './utils/logger/logger.js';
+// import logger from './utils/logger/logger.js';
 import userInfo from './utils/logger/userInfo.js';
 
 // Load environment variables
@@ -52,8 +52,8 @@ setUpMiddlewares():void {
 
   // error handler
     private errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
-      // console.error(err.stack);
-      logger.error(err.stack);
+      console.error(err.stack);
+      // logger.error(err.stack);
       res.status(500).json({ error: 'Something went wrong!' });
     }
 
@@ -63,20 +63,24 @@ setUpMiddlewares():void {
           await connectToMongoDB();
           this.app.listen(port, () => 
           {     
-              logger.warn(
-            'checking'
-              )
+            //   logger.warn(
+            // 'checking'
+            //   )
               if(process.env.NODE_ENV === 'development'){
-                logger.info(`Server is running on port ${port} and the user is ${userInfo.user}`);
+                console.log(`Server is running on port ${port} and the user is ${userInfo.user}`)
+                // logger.info(`Server is running on port ${port} and the user is ${userInfo.user}`);
               }else{
-                logger.info(`Server is running on port ${port}`);
+                // logger.info(`Server is running on port ${port}`);
+                console.log(`Server is running on port ${port}`);
               }
           });
         }catch(error){
             if(process.env.NODE_ENV === 'development'){
-              logger.error(`Error: ${error} and the user is ${userInfo.user}`);
+              // logger.error(`Error: ${error} and the user is ${userInfo.user}`);
+              console.log(`Error: ${error} and the user is ${userInfo.user}`);
             }else{
-                logger.error(`Error: ${error}`);
+                // logger.error(`Error: ${error}`);
+                console.log(`Error: ${error}`);
             }
         
     }
