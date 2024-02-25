@@ -13,6 +13,7 @@ const userSchema = new Schema<IUser>({
     emergencyPhoneNumber: {type: String},   
     bloodType: {type: String},
     medicalInfo: {type: String},
+    salt: {type: String, required: true},
 });
 
 export default model<IUser>("User", userSchema);
