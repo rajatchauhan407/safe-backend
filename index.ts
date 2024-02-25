@@ -13,7 +13,7 @@ import connectToMongoDB from './utils/connectDB.js';
 import {corsOptions} from './config/cors.js';
 // import logger from './utils/logger/logger.js';
 import userInfo from './utils/logger/userInfo.js';
-
+import GeoLocationRoutes from './routes/geoLocationRoutes.js'
 // Load environment variables
 dotenv.config();
 
@@ -46,6 +46,9 @@ setUpMiddlewares():void {
 // setting routes
     public setRoutes():void {
       this.app.use('/api/v1', this.v1Routes());
+        this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
+            res.send('Hello World');           
+    });
     }
 
   // error handler
@@ -64,7 +67,7 @@ setUpMiddlewares():void {
     });
 
     // Define other v1 specific routes here
-
+    router.use('/geoLocation', GeoLocationRoutes);
     return router;
 }
 // start server 
@@ -100,3 +103,5 @@ setUpMiddlewares():void {
 const server = new Server();
 const PORT = server.setPort();
 server.startServer(PORT);
+
+
