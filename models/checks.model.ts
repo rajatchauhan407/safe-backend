@@ -1,5 +1,5 @@
 import {model, Schema} from "mongoose";
-import SafeValidator from "../shared/validations/validator";
+import SafeValidator from "../shared/validations/validator.js";
 import { IChecking } from "../shared/interfaces/checks.interface";
 
 const checksSchema = new Schema<IChecking>({
@@ -10,6 +10,10 @@ const checksSchema = new Schema<IChecking>({
             validator: (v:string)=>{return SafeValidator.validateUserType(v)},
             message: "User type must be either worker or supervisor"
         }
+    },
+    checkType: {
+        type: String,
+        required: true
     },
     userId: {
         type: String,
