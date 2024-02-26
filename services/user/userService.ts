@@ -3,6 +3,7 @@ import {IUser} from "../../shared/interfaces/user.interface";
 import {Role} from "../../shared/enums/role.enum";
 import Authentication from "../auth/auth.js";
 class UserService {
+    
     // Create a new user
     public async createUser(userData:{
     constructionSiteId: string;
