@@ -15,6 +15,7 @@ import {corsOptions} from './config/cors.js';
 import userInfo from './utils/logger/userInfo.js';
 import GeoLocationRoutes from './routes/geoLocationRoutes.js'
 import AuthRoutes from './routes/register.route.js'
+import UserRoutes from './routes/user.route.js'
 // Load environment variables
 dotenv.config();
 
@@ -70,6 +71,7 @@ setUpMiddlewares():void {
     // Define other v1 specific routes here
     router.use(GeoLocationRoutes);
     router.use(AuthRoutes);
+    router.use(UserRoutes);
     return router;
 }
 // start server 
