@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import EmergencyContact from '../../models/emergencyContact.model';
+import EmergencyContact from '../../models/emergencyContact.model.js';
 import dotenv from 'dotenv';
 // ========================================
 dotenv.config();

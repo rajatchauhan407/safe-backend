@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Express from "express";
-import SMSService from '../services/notifications/sms';
+import SMSService from '../services/notifications/sms.js';
+
 // =========================================
 const app = Express();
-class SMSNotificationController{
+class smsNotificationController{
     async emergencyCall(req: Request, res: Response, next: NextFunction) {
         try {
             // const { message } = req.body;
@@ -16,4 +17,4 @@ class SMSNotificationController{
         }
     }
     }
-export default new SMSNotificationController();
+export default new smsNotificationController();

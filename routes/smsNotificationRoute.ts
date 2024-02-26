@@ -1,7 +1,7 @@
 import Express from "express";
-import SMSNotificationController from '../controllers/smsNotificationController';
-// =========================================
 const router = Express.Router();
-router.post("/sms/emergency/call",SMSNotificationController.emergencyCall);
+import smsNotificationController from '../controllers/smsNotificationController.js';
+// =========================================
+router.post("/sms",smsNotificationController.emergencyCall);
 
 export default router;
