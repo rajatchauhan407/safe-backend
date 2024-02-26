@@ -1,11 +1,12 @@
 import crypto from 'crypto';
-import User from '../../models/user.model';
+import User from '../../models/user.model.js';
 import jwt, { Secret } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 // ========================================
 
 class Authentication{
+  
     // Generate Random Salt
     static generateSalt(): string {
         const salt = crypto.randomBytes(16).toString('hex');

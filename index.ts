@@ -14,6 +14,7 @@ import {corsOptions} from './config/cors.js';
 // import logger from './utils/logger/logger.js';
 import userInfo from './utils/logger/userInfo.js';
 import GeoLocationRoutes from './routes/geoLocationRoutes.js'
+import AuthRoutes from './routes/register.route.js'
 // Load environment variables
 dotenv.config();
 
@@ -45,10 +46,10 @@ setUpMiddlewares():void {
 
 // setting routes
     public setRoutes():void {
+      this.app.use('/api/v1', this.v1Routes());
         this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
             res.send('Hello World');           
     });
-    this.app.use(GeoLocationRoutes)
     }
 
   // error handler
@@ -58,6 +59,19 @@ setUpMiddlewares():void {
       res.status(500).json({ error: 'Something went wrong!' });
     }
 
+  //  versioning routes
+  private v1Routes(): express.Router {
+    const router = express.Router();
+
+    router.get('/', (req: Request, res: Response, next: NextFunction) => {
+        res.send('Hello World from API v1');
+    });
+
+    // Define other v1 specific routes here
+    router.use(GeoLocationRoutes);
+    router.use(AuthRoutes);
+    return router;
+}
 // start server 
     public async startServer(port:number):Promise<void> {
         try{

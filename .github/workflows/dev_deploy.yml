@@ -47,4 +47,7 @@ jobs:
           cd /home/ubuntu/safe_dev/dist
           /home/ubuntu/.nvm/versions/node/v18.14.0/bin/npm install
           /home/ubuntu/.nvm/versions/node/v18.14.0/bin/pm2 start ecosystem.config.cjs
+          cd /home/ubuntu/safe_dev
+          npm install
+          pm2 start ecosystem.config.cjs
           # Any post-deployment commands here, like restarting your service
