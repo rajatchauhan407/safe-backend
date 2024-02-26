@@ -1,6 +1,3 @@
-// import { Client, Message, MessageType } from '@vonage/server-sdk';
-// import { Vonage } from '@vonage/server-sdk';
-// import { Client } from 'twilio';
 import twilio from 'twilio';
 import EmergencyContact from '../../models/emergencyContact.model';
 import dotenv from 'dotenv';
@@ -8,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioPohoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
 class SMSService{
     // public twilioClient: Twilio;
@@ -41,9 +39,7 @@ class SMSService{
             body: messageText,
             // to: '+16047206967',
             to: recipientNumber,
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // TODO: REPLACE WITH YOUR TWILIO NUMBER in ENV FILE IF NEEDED!
-            from: '+12093065416',
+            from: twilioPohoneNumber,
           });
     
           console.log('SMS sent successfully:', response);
