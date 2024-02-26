@@ -19,7 +19,7 @@ class SMSService{
         this.twilioClient = twilio(accountSid, authToken);
       }
 
-      async emergencyContactList(messageText: string): Promise<void> {
+      async emergencyContactCall(messageText: string): Promise<void> {
         try {
             // Fetch emergency contacts from MongoDB
             const emergencyContacts = await EmergencyContact.find({}, 'phoneNumber');
