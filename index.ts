@@ -109,5 +109,3 @@ setUpMiddlewares():void {
 const server = new Server();
 const PORT = server.setPort();
 server.startServer(PORT);
-
-
