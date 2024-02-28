@@ -88,7 +88,7 @@ class GeoLocation {
   }
 
   async getLocationOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
-    try {
+    try {      
       const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
@@ -130,6 +130,23 @@ class GeoLocation {
     // Check if the distance is within the specified radius
     return distanceInKm <= actualRadius;
   }
+
+  async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
+    try {
+      console.log("comes here...")
+      const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
+
+      if (!constructionSite) {
+        return { error: "Construction site not found" };
+      }
+
+      const safeZoneLocation = constructionSite.safeZoneLocation as ILocation;
+      return safeZoneLocation;
+    } catch (error) {
+        return { error: "error"};
+    }
+  }
+
       
       
 }
