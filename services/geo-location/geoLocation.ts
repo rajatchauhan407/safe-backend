@@ -133,7 +133,6 @@ class GeoLocation {
 
   async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
     try {
-      console.log("comes here...")
       const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
