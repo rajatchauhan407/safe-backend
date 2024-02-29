@@ -19,6 +19,7 @@ import UserRoutes from './routes/user.route.js'
 import NotificationRoutes from './routes/notification.route.js'
 import CompanyRoutes from './routes/company.route.js'
 import { IError } from './shared/interfaces/error.interface';
+import smsNotificationRoute from './routes/smsNotificationRoute.js';
 // Load environment variables
 dotenv.config();
 
@@ -78,6 +79,7 @@ setUpMiddlewares():void {
     router.use(UserRoutes);
     router.use(NotificationRoutes);
     router.use(CompanyRoutes);
+    router.use(smsNotificationRoute);
     return router;
 }
 // start server 
@@ -113,5 +115,3 @@ setUpMiddlewares():void {
 const server = new Server();
 const PORT = server.setPort();
 server.startServer(PORT);
-
-
