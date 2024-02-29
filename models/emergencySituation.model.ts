@@ -7,7 +7,6 @@ const emergencySituationSchema = new Schema<IEmergencySituation>({
     severity: { type: String, required: true },
     firstAid: { type: String, required: true },
     whistles: { type: String, required: true },
-
 });
 
 export default model<IEmergencySituation>("EmergencySituation", emergencySituationSchema);

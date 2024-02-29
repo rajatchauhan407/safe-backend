@@ -5,7 +5,7 @@ import { Document } from "mongoose";
 
 
 export interface IConstructionSite extends Document{
-    addressId: IAddress["_id"];
+    address: IAddress;
     supervisorId: string;
     siteLocation: ILocation;
     safeZoneLocation: ILocation;

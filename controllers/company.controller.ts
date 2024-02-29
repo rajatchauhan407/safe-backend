@@ -17,5 +17,49 @@ class CompanyController{
           next(error);
         }
       }
+
+      public async createSite(req:Request, res:Response, next:NextFunction) {
+        try {
+          const siteData = req.body;
+          const newSite = await new CompanyService().registerSite(siteData);
+          console.log(newSite)
+          if(newSite.error){
+            next(newSite.error);
+          }else{
+            res.status(201).json(newSite.data);
+          }
+        } catch (error) {
+          next(error);
+        }
+      }
+
+      public async createEmergencyContact(req:Request, res:Response, next:NextFunction) {
+        try {
+          const emergencyContactData = req.body;
+          const newContact = await new CompanyService().registerEmergencyContact(emergencyContactData);
+          console.log(newContact)
+          if(newContact.error){
+            next(newContact.error);
+          }else{
+            res.status(201).json(newContact.data);
+          }
+        } catch (error) {
+          next(error);
+        }
+      }
+      public async createEmergencySituation(req:Request, res:Response, next:NextFunction) {
+        try {
+          const emergencySituation = req.body;
+          const newEmergencySituation = await new CompanyService().registerEmergencySituation(emergencySituation);
+          console.log(newEmergencySituation)
+          if(newEmergencySituation.error){
+            next(newEmergencySituation.error);
+          }else{
+            res.status(201).json(newEmergencySituation.data);
+          }
+        } catch (error) {
+          next(error);
+        }
+      }
     }
 export default new CompanyController();
