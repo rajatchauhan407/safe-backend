@@ -17,6 +17,8 @@ import GeoLocationRoutes from './routes/geoLocationRoutes.js'
 import AuthRoutes from './routes/register.route.js'
 import UserRoutes from './routes/user.route.js'
 import NotificationRoutes from './routes/notification.route.js'
+import CompanyRoutes from './routes/company.route.js'
+import { IError } from './shared/interfaces/error.interface';
 // Load environment variables
 dotenv.config();
 
@@ -29,6 +31,7 @@ class Server {
         this.app = express();
         this.setUpMiddlewares();
         this.setRoutes();
+        this.app.use(this.errorHandler.bind(this));
     }
 
 // setting up middlewares
@@ -37,7 +40,6 @@ setUpMiddlewares():void {
     this.app.use(express.urlencoded({extended:true}));
     this.app.use(helmet());
     this.app.use(cors(corsOptions));
-    this.app.use(this.errorHandler.bind(this));
 }
 
 // setting port
@@ -55,10 +57,11 @@ setUpMiddlewares():void {
     }
 
   // error handler
-    private errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
-      console.error(err.stack);
+    private errorHandler(err: IError, req: Request, res: Response, next: NextFunction): void {
       // logger.error(err.stack);
-      res.status(500).json({ error: 'Something went wrong!' });
+      // console.log("hello")
+      console.log(err)
+      res.status(err.statusCode).json({ error: err.error,statusCode:err.statusCode,details: process.env.Node_ENV=="development"?err.details:null});
     }
 
   //  versioning routes
@@ -74,6 +77,7 @@ setUpMiddlewares():void {
     router.use(AuthRoutes);
     router.use(UserRoutes);
     router.use(NotificationRoutes);
+    router.use(CompanyRoutes);
     return router;
 }
 // start server 
