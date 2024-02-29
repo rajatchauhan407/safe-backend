@@ -12,6 +12,6 @@ export interface IAlert extends Document{
     timestamp:Date;
     responseAction?:string;
     followUpAction?:string;
-    recipients:IUser[];
-    emergencyText:string;
+    recipients?:IUser[];
+    emergencyText?:string;
 }

@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IAddress } from "../shared/interfaces/address.interface";
-import SafeValidator from "../shared/validations/validator";
+import SafeValidator from "../shared/validations/validator.js";
 
 const addressSchema = new Schema<IAddress>({
   street: {
