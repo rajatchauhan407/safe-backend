@@ -16,6 +16,7 @@ import userInfo from './utils/logger/userInfo.js';
 import GeoLocationRoutes from './routes/geoLocationRoutes.js'
 import AuthRoutes from './routes/register.route.js'
 import UserRoutes from './routes/user.route.js'
+import smsNotificationRoute from './routes/smsNotificationRoute.js';
 // Load environment variables
 dotenv.config();
 
@@ -72,6 +73,7 @@ setUpMiddlewares():void {
     router.use(GeoLocationRoutes);
     router.use(AuthRoutes);
     router.use(UserRoutes);
+    router.use(smsNotificationRoute);
     return router;
 }
 // start server 
@@ -107,5 +109,3 @@ setUpMiddlewares():void {
 const server = new Server();
 const PORT = server.setPort();
 server.startServer(PORT);
-
-
