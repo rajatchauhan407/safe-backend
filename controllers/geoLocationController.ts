@@ -42,6 +42,18 @@ class GeoLocationController{
         }
     }
 
+    async checkIfUserInSafeZone(req: Request, res: Response, next: NextFunction) {
+        let data = req.body;
+        try {
+            console.log(data.siteId)
+            const result = await geo.checkIfUserInSafeZone(data.location, data.siteId, data.workerId);
+            res.json(result);
+        } catch (error) {
+            console.error("Error occurred:", error);
+            res.status(500).json({ error: error });
+        }
+    }
+
 }
 
 const geoLocationController = new GeoLocationController();
