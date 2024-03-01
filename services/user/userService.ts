@@ -2,6 +2,9 @@ import User from "../../models/user.model.js";
 import {IUser} from "../../shared/interfaces/user.interface";
 import {Role} from "../../shared/enums/role.enum";
 import Authentication from "../auth/auth.js";
+import ApplicationError from "../../errors/applicationError.js";
+import { IUserWithout } from "../../shared/interfaces/userWithout.interface.js";
+import { IError } from "../../shared/interfaces/error.interface.js";
 class UserService {
     
     // Create a new user
@@ -18,29 +21,31 @@ class UserService {
     bloodType?: string;
     medicalInfo?: string;
     salt?: string;
-    }): Promise<IUser> {
+    }): Promise<IUserWithout | IError> {
         // Generate Salt from Authentication class
-        const salt = Authentication.generateSalt();
+        const userSalt = Authentication.generateSalt();
         try {
             let newUser = new User(userData);
-            newUser.salt = salt;
-            const hashedPassword = Authentication.hashPassword(userData.password, salt);
+            newUser.salt = userSalt;
+            const hashedPassword = Authentication.hashPassword(userData.password,userSalt);
             newUser.password = hashedPassword;
             const savedUser = await newUser.save();
-            return savedUser;
+            const {password,salt, ...userWithoutPassword} = savedUser.toObject();
+            return userWithoutPassword as IUserWithout;
         } catch (error) {
-            throw error;
+            return new ApplicationError('Error saving user',400,'Error saving user',error)
         }
     
     }
 // update user
-    public async updateUser(userId: string,userData:{}): Promise<IUser | null> {
+    public async updateUser(userId: string,userData:{}): Promise<IUserWithout | IError | null> {
         try {
             const updatedUser = await User.findOneAndUpdate({ _id:userId },userData,{ new: true });
             if(updatedUser){
-                return updatedUser;
+                const {password,salt, ...userWithoutPassword} = updatedUser.toObject();
+                return userWithoutPassword as IUserWithout;
             }else{
-                return null;
+                return new ApplicationError('User not found',404,'User not found',null);
             }
         } catch (error) {
             throw error;
@@ -57,21 +62,30 @@ class UserService {
         }
     }
 // get all users
-    public async getUsers(): Promise<IUser[]> {
+    public async getUsers(): Promise<IUserWithout[] | IError | null> {
         try {
             const users = await User.find({});
-            return users;
+            const newUsers = users.map((user)=>{
+                const {password,salt, ...userWithoutPassword} = user.toObject();
+                return userWithoutPassword as IUserWithout;
+            })
+            return newUsers;
         } catch (error) {
-            throw error;
+            return new ApplicationError('Error getting users',400,'Error getting users',error)
         }
     }
 // get user by id
-    public async getUser(userId: string): Promise<IUser | null> {
+    public async getUser(userId: string): Promise<any | null> {
         try {
             const user = await User.findOne({ userId:userId });
-            return user;
+            if(user){
+                const {password,salt, ...userWithoutPassword} = user.toObject();
+                return userWithoutPassword;
+            }else{
+                return new ApplicationError('User not found',404,'User not found',null)
+            }
         } catch (error) {
-            throw error;
+            return new ApplicationError('Error getting user',400,'Error getting user',error)
         }
     }
 

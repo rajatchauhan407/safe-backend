@@ -19,7 +19,7 @@ class SafeValidator {
       return false;
     }
 
-    const regex = /^[a-zA-Z0-9\s]+$/;
+    const regex = /^[a-zA-Z0-9\s.]+$/;
 
     return regex.test(companyName);
   }

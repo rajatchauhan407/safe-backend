@@ -1,12 +1,13 @@
 import {model, Schema} from "mongoose";
 
 import { IConstructionSite } from "../shared/interfaces/constructionSite.interface";
-
+import Address from "./address.model.js";
+import Location from "./location.model.js";
 const constructionSiteSchema = new Schema<IConstructionSite>({
-    addressId: {type: Schema.Types.ObjectId, ref: "Address", required: true},
+    address: {type:Address.schema, required: true},
     supervisorId: {type: String, required: true},
-    siteLocation: {type: Object, required: true},
-    safeZoneLocation: {type: Object, required: true},
+    siteLocation: {type: Location.schema, required: true},
+    safeZoneLocation: {type: Location.schema, required: true},
     companyId: {type: String, required: true},
     workers: [{type: Schema.Types.ObjectId, ref: "User"}]
 });

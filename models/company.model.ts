@@ -1,7 +1,8 @@
 import { ICompany } from "../shared/interfaces/company.interface";
 
 import { Schema, model } from "mongoose";
-import SafeValidator from "../shared/validations/validator";
+import SafeValidator from "../shared/validations/validator.js";
+import Address from "./address.model.js";
 
 const companySchema = new Schema<ICompany>({
   companyName: { type: String, 
@@ -22,7 +23,7 @@ const companySchema = new Schema<ICompany>({
                 message: props => `${props.value} is not a valid email address!`
                 },
           required: [true, 'Email is required !'] },
-  addressId: { type: String, 
+  address: { type: Address.schema, 
                 required: [true, 'Address is required !'] },
 });
 

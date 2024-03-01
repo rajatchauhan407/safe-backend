@@ -5,5 +5,5 @@ import { LocationType } from '../enums/locationType.enum';
 export interface ILocation extends Document{
     type: LocationType;
     coordinates: [number, number];
-    radius: {type: Number, required: true};
+    radius?: {type: Number, required: true};
 }
