@@ -5,15 +5,20 @@ class GeoLocation {
 
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
     try {
-      
-      const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);             
+        const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);             
       if ('error' in constructionSiteLocation) {
         return { error: constructionSiteLocation.error };
-      }              
-      const { coordinates} = constructionSiteLocation;             
+      }    
+    
+      if (constructionSiteLocation && constructionSiteLocation.radius !== undefined) {
+        const radius = constructionSiteLocation.radius; // Accessing the radius field
+       console.log("construction site radius: "+radius)
+             
+      const { coordinates} = constructionSiteLocation;       
+      console.log("construction site coordinates: "+coordinates)      
       const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], constructionSiteLocation.radius);
      
-     
+      console.log("isWithinRadius: "+isWithinRadius)
       //hardcoded for testing - when the diff is more than 0.5 km
       //const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7178, -74.0060, { type: 0.5 });
 
@@ -50,9 +55,11 @@ class GeoLocation {
         // If the location is outside the radius, return an error message
         return { message: "Please be on site while check-in" };
       }
+    }
     } catch (error) {
             return {"error": error}
       }
+      return { message: "Something went wrong" };
   }
 
   async checkOutUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
@@ -88,7 +95,7 @@ class GeoLocation {
   }
 
   async getLocationOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
-    try {
+    try {      
       const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
@@ -102,9 +109,15 @@ class GeoLocation {
     }
   }
 
+  
   async calculateDistanceAndCheckRadius(userLatitude: number, userLongitude: number, siteLatitude: number, siteLongitude: number,radius: { type: Number }): Promise<boolean> {
-    const actualRadius = radius.type.valueOf();         
-   
+    // Convert radius in meters to kilometers;         
+    const actualRadius =Number(radius) / 1000;    
+   console.log("radius: "+actualRadius)
+   console.log("userLatitude: "+userLatitude)
+   console.log("userLongitude: "+userLongitude)
+   console.log("siteLatitude: "+siteLatitude)
+   console.log("siteLongitude: "+siteLongitude)
     const earthRadius: number = 6371; // Earth's radius in kilometers
     const deg2rad: (deg: number) => number = (deg: number) => deg * (Math.PI / 180);
 
@@ -130,6 +143,52 @@ class GeoLocation {
     // Check if the distance is within the specified radius
     return distanceInKm <= actualRadius;
   }
+
+  async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
+    try {
+      const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
+
+      if (!constructionSite) {
+        return { error: "Construction site not found" };
+      }
+
+      const safeZoneLocation = constructionSite.safeZoneLocation as ILocation;
+      return safeZoneLocation;
+    } catch (error) {
+        return { error: "error"};
+    }
+  }
+
+  //To check if worker is in safe zone.
+  async checkIfUserInSafeZone(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
+    try {
+      const safeZoneLocation: ILocation | { error: string } = await this.getSafeZoneOfConstructionSite(siteId);             
+    if ('error' in safeZoneLocation) {
+      return { error: safeZoneLocation.error };
+    }    
+  
+    if (safeZoneLocation && safeZoneLocation.radius !== undefined) {
+      const radius = safeZoneLocation.radius; // Accessing the radius field
+     console.log("safeZoneLocation radius: "+radius)
+           
+    const { coordinates} = safeZoneLocation;       
+    console.log("safeZoneLocation coordinates: "+coordinates)      
+    const isWithinRadius = await this.calculateDistanceAndCheckRadius(userLocation.latitude, userLocation.longitude, coordinates[0], coordinates[1], safeZoneLocation.radius);
+   
+    console.log("isWithinRadius: "+isWithinRadius)
+   
+    if (isWithinRadius) {
+          return { message: "Worker is in safe zone" };
+    } else {
+      return { message: "Worker is not in safe zone" };
+    }
+  }
+  } catch (error) {
+          return {"error": error}
+    }
+    return { message: "Something went wrong" };
+  }
+
       
       
 }
