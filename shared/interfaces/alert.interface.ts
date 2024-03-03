@@ -14,4 +14,5 @@ export interface IAlert extends Document{
     followUpAction?:string;
     recipients?:IUser[];
     emergencyText?:string;
+    resolved:boolean;
 }

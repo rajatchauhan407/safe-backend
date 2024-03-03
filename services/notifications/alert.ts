@@ -1,17 +1,23 @@
 import Alert from "../../models/alert.model.js";
 import { IAlert } from "../../shared/interfaces/alert.interface";
-class AlertService {
+import NotificationService from "./notifications.js";
+import ApplicationError from "../../errors/applicationError.js";
+import { IError } from "../../shared/interfaces/error.interface.js";
+class AlertService extends NotificationService{
   private static instance: AlertService;
-  private constructor() {}
+  private constructor() {
+    super();
+  }
   public static getInstance() {
     if (!AlertService.instance) {
       AlertService.instance = new AlertService();
     }
     return AlertService.instance;
   }
+// create an alert
   public async createAlert(
     options:IAlert
-  ):Promise<IAlert> {
+  ):Promise<IAlert | IError> {
     try {
         const {
             role,
@@ -22,7 +28,8 @@ class AlertService {
             responseAction,
             followUpAction,
             recipients,
-            emergencyText
+            emergencyText,
+            resolved = false
         } = options;
 
         const timestamp = new Date();
@@ -36,12 +43,35 @@ class AlertService {
             responseAction,
             followUpAction,
             recipients,
-            emergencyText
+            emergencyText,
+            resolved
         });
       await alert.save();
       return alert;
-    } catch (error) {
-      throw error;
+    } catch (err: unknown) {
+      if (err instanceof ApplicationError) {
+        return err
+      }
+      return new ApplicationError('Cannot create alert', 500, 'Can not create Alert',err);
+    }
+  }
+
+  // cancel an alert
+  public async cancelAlert(alertId:string):Promise<IAlert | IError | null> {
+    try {
+      const alert = await Alert.findByIdAndUpdate(alertId,{resolved:true},{new:true});
+      if(alert?.resolved){
+        throw new ApplicationError("Alert already cancelled",404,"Alert already cancelled",null);
+      }
+      if (!alert) {
+        throw new ApplicationError("Alert not found", 404, "Alert not found",null);
+      }
+      return alert;
+    } catch (error:unknown) {
+      if (error instanceof ApplicationError) {
+        return error;
+      }
+      return new ApplicationError('Cannot Cancel Alert', 400, 'Cannot cancel Alert',error);
     }
   }
 }

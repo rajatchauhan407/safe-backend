@@ -1,13 +1,15 @@
 import twilio from 'twilio';
 import EmergencyContact from '../../models/emergencyContact.model.js';
 import dotenv from 'dotenv';
+import NotificationService from './notifications.js';
 // ========================================
 dotenv.config();
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPohoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-class SMSService{
+class SMSService extends NotificationService{
+  
     // public twilioClient: Twilio;
     public twilioClient: any;
     public messageText: string = 'Emergency Alert';
@@ -15,6 +17,7 @@ class SMSService{
     // public emergencyContactName: string = 'Emergency Contact';
 
     constructor() {
+      super();
         // this.twilioClient = new Twilio(accountSid, authToken);
         this.twilioClient = twilio(accountSid, authToken);
       }
