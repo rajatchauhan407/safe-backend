@@ -1,6 +1,8 @@
 
-class NotificaitionService {
-  
-}
+class NotificationService {
+  constructor(){
 
-export default new NotificaitionService;
+  }
+}   
+
+export default NotificationService;

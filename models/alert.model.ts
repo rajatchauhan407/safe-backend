@@ -3,7 +3,7 @@ import { IAlert } from "../shared/interfaces/alert.interface";
 
 const alertSchema = new Schema<IAlert>({
   role: { type: String, required: true },
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, ref: "User", required: true },
   alertLocation: { type: Object, required: true },
   emergencySituationId: {
     type: Schema.Types.ObjectId,
@@ -16,6 +16,7 @@ const alertSchema = new Schema<IAlert>({
   followUpAction: { type: String },
   recipients: [{ type: Schema.Types.ObjectId, ref: "User" }],
   emergencyText: { type: String, required: true },
+  resolved: { type: Boolean, required: true },
 });
 
 export default model<IAlert>("Alert", alertSchema);
