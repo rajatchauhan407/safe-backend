@@ -13,8 +13,7 @@ class GeoLocationController{
             const result = await geo.checkInUser(data.location, data.siteId, data.workerId);
             res.json(result);
         } catch (error) {
-            console.error("Error occurred:", error);
-            res.status(500).json({ error: error });
+            next(error)
         }
     }
     
@@ -22,11 +21,10 @@ class GeoLocationController{
         let data = req.body;
         try {
             console.log(data.location);
-            const result = await geo.checkOutUser(data.location, data.siteId, data.workerId);
+            const result = await geo.checkOutUser(data.siteId, data.workerId);
             res.json(result);
         } catch (error) {
-            console.error("Error occurred:", error);
-            res.status(500).json({ error: error });
+            next(error)
         }
     }
 
@@ -37,8 +35,7 @@ class GeoLocationController{
             const result = await geo.getSafeZoneOfConstructionSite(data.siteId);
             res.json(result);
         } catch (error) {
-            console.error("Error occurred:", error);
-            res.status(500).json({ error: error });
+            next(error)
         }
     }
 
@@ -49,8 +46,7 @@ class GeoLocationController{
             const result = await geo.checkIfUserInSafeZone(data.location, data.siteId, data.workerId);
             res.json(result);
         } catch (error) {
-            console.error("Error occurred:", error);
-            res.status(500).json({ error: error });
+            next(error)
         }
     }
 
