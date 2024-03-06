@@ -1,5 +1,5 @@
-import Authentication from "./auth";
-import User from '../../models/user.model';
+import Authentication from "./auth.js";
+import User from '../../models/user.model.js';
 // ========================================
 
 class LoginService extends Authentication {

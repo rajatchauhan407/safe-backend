@@ -20,6 +20,7 @@ import NotificationRoutes from './routes/notification.route.js'
 import CompanyRoutes from './routes/company.route.js'
 import { IError } from './shared/interfaces/error.interface';
 import smsNotificationRoute from './routes/smsNotificationRoute.js';
+import loginLogout from './routes/loginLogoutRoute.js';
 // Load environment variables
 dotenv.config();
 
@@ -80,6 +81,8 @@ setUpMiddlewares():void {
     router.use(NotificationRoutes);
     router.use(CompanyRoutes);
     router.use(smsNotificationRoute);
+    router.use(loginLogout);
+   
     return router;
 }
 // start server 
