@@ -19,33 +19,9 @@ class AlertService extends NotificationService{
     options:IAlert
   ):Promise<IAlert | IError> {
     try {
-        const {
-            role,
-            userId,
-            alertLocation,
-            emergencySituationId,
-            emergencyNotification,
-            responseAction,
-            followUpAction,
-            recipients,
-            emergencyText,
-            resolved = false
-        } = options;
 
         const timestamp = new Date();
-        const alert = new Alert({
-            role,
-            userId,
-            alertLocation,
-            emergencySituationId,
-            emergencyNotification,
-            timestamp,
-            responseAction,
-            followUpAction,
-            recipients,
-            emergencyText,
-            resolved
-        });
+        const alert = new Alert({ ...options, timestamp });
       await alert.save();
       return alert;
     } catch (err: unknown) {

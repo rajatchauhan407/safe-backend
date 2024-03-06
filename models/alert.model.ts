@@ -4,6 +4,8 @@ import { IAlert } from "../shared/interfaces/alert.interface";
 const alertSchema = new Schema<IAlert>({
   role: { type: String, required: true },
   userId: { type: String, ref: "User", required: true },
+  emergencyType: { type: String, required: true },
+  degreeOfEmergency: { type: String, required: true},
   alertLocation: { type: Object, required: true },
   emergencySituationId: {
     type: Schema.Types.ObjectId,
@@ -16,7 +18,9 @@ const alertSchema = new Schema<IAlert>({
   followUpAction: { type: String },
   recipients: [{ type: Schema.Types.ObjectId, ref: "User" }],
   emergencyText: { type: String, required: true },
-  resolved: { type: Boolean, required: true },
+  resolved: { type: Boolean, required: true, default: false},
+  assistance: { type: Boolean, required: true },
+  imageUrl: { type: String },
 });
 
 export default model<IAlert>("Alert", alertSchema);
