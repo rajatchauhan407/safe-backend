@@ -1,14 +1,18 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
 import CheckingModel from "../../models/checks.model.js";
+import {IError} from "../../shared/interfaces/error.interface";
+import ApplicationError from "../../errors/applicationError.js";
 class GeoLocation {
-
-  async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
+  
+  async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
-        const constructionSiteLocation: ILocation | { error: string } = await this.getLocationOfConstructionSite(siteId);             
-      if ('error' in constructionSiteLocation) {
-        return { error: constructionSiteLocation.error };
-      }    
+      const constructionSiteResult = await this.getLocationOfConstructionSite(siteId);
+
+      if (constructionSiteResult.error) {
+        return {data:null, error:new ApplicationError('Site not found',400,'Site not found',constructionSiteResult.error)}
+      }
+      const constructionSiteLocation = constructionSiteResult.data;  
     
       if (constructionSiteLocation && constructionSiteLocation.radius !== undefined) {
         const radius = constructionSiteLocation.radius; // Accessing the radius field
@@ -50,22 +54,21 @@ class GeoLocation {
             });     
             await checkIn.save(); 
           }
-        return { message: "check in successful" };
+          return {data: {message: "check in successful"}, error:null}
       } else {
-        // If the location is outside the radius, return an error message
-        return { message: "Please be on site while check-in" };
+        // If the location is outside the radius
+        return {data: {message: "Please be on site while check-in"}, error:null}
       }
     }
     } catch (error) {
-            return {"error": error}
+            return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
       }
-      return { message: "Something went wrong" };
+      return {data: {message: "Something went wrong"}, error:null}
   }
 
-  async checkOutUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
+  async checkOutUser(siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
-      // console.log(location,siteId,workerId);
-      // const constructionSiteLocation = await this.getLocationOfConstructionSite(siteId);
+    
       const workerData = await CheckingModel.findOne({
         userType: "worker",
         userId: workerId,
@@ -88,24 +91,24 @@ class GeoLocation {
         });     
         await checkOut.save(); // Save the new document
       }
-     return { message: "check out successful" };    
+    
+     return {data: {message: "check out successful"}, error:null}   
     } catch (error) {
-          return {"error": error}
+          return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
     }
   }
 
-  async getLocationOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
+  async getLocationOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
     try {      
       const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
-        return { error: "Construction site not found" };
+        return {data:null, error:new ApplicationError('Construction site not found',400,'Construction site not found',"Construction site not found")}
       }
-
       const siteLocation = constructionSite.siteLocation as ILocation;
-      return siteLocation;
+      return {data: siteLocation, error:null} 
     } catch (error) {
-        return { error: "error"};
+      return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
     }
   }
 
@@ -144,28 +147,31 @@ class GeoLocation {
     return distanceInKm <= actualRadius;
   }
 
-  async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
+ // async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
+  async getSafeZoneOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
     try {
       const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
-        return { error: "Construction site not found" };
+        return {data:null, error:new ApplicationError('Construction site not found',400,'Construction site not found',"Construction site not found")}
       }
 
       const safeZoneLocation = constructionSite.safeZoneLocation as ILocation;
-      return safeZoneLocation;
+      return {data: safeZoneLocation, error:null} 
     } catch (error) {
-        return { error: "error"};
+        return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
     }
   }
 
   //To check if worker is in safe zone.
-  async checkIfUserInSafeZone(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<Object> {
+  async checkIfUserInSafeZone(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
-      const safeZoneLocation: ILocation | { error: string } = await this.getSafeZoneOfConstructionSite(siteId);             
-    if ('error' in safeZoneLocation) {
-      return { error: safeZoneLocation.error };
-    }    
+      const safeZoneResult = await this.getSafeZoneOfConstructionSite(siteId);
+
+      if (safeZoneResult.error) {
+        return {data:null, error:new ApplicationError('Site not found',400,'Site not found',safeZoneResult.error)}
+      }
+      const safeZoneLocation = safeZoneResult.data;       
   
     if (safeZoneLocation && safeZoneLocation.radius !== undefined) {
       const radius = safeZoneLocation.radius; // Accessing the radius field
@@ -178,19 +184,17 @@ class GeoLocation {
     console.log("isWithinRadius: "+isWithinRadius)
    
     if (isWithinRadius) {
-          return { message: "Worker is in safe zone" };
+          return {data: {message: "Worker is in safe zone"}, error:null}
     } else {
-      return { message: "Worker is not in safe zone" };
+      return {data: {message: "Worker is not in safe zone"}, error:null}
     }
   }
   } catch (error) {
-          return {"error": error}
-    }
-    return { message: "Something went wrong" };
-  }
+          return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
 
-      
-      
+    }
+    return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong','Something went wrong')}
+  }   
 }
 
 
