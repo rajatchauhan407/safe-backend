@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import UserService from '../services/user/userService.js';
 import LoginService from '../services/auth/login.js';
+import LogoutService from '../services/auth/logout.js';
 // ========================================================
 class AuthController {
   // REGISTER ============================================
@@ -24,6 +25,14 @@ async login(req: Request, res: Response, next: NextFunction) {
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
+  } catch (error) {
+    next(error);
+  }
+}
+// LOGOUT ===============================================
+async logout(req: Request, res: Response, next: NextFunction) {
+  try {
+    await LogoutService.logout(req, res);
   } catch (error) {
     next(error);
   }
