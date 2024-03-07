@@ -1,18 +1,16 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
 import CheckingModel from "../../models/checks.model.js";
-import { IError } from "../../shared/interfaces/error.interface";
+import {IChecking} from "../../shared/interfaces/checks.interface"
+import {IError} from "../../shared/interfaces/error.interface";
 import ApplicationError from "../../errors/applicationError.js";
 class GeoLocation {
-  async checkInUser(
-    userLocation: { latitude: number; longitude: number },
-    siteId: string,
-    workerId: string
-  ): Promise<{ data: Object | null; error: IError | null }> {
+  
+  //Check-In worker
+  async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
-      const constructionSiteResult = await this.getLocationOfConstructionSite(
-        siteId
-      );
+      
+      const constructionSiteResult = await this.getLocationOfConstructionSite(siteId);
 
       if (constructionSiteResult.error) {
         return {
@@ -86,23 +84,13 @@ class GeoLocation {
         }
       }
     } catch (error) {
-      return {
-        data: null,
-        error: new ApplicationError(
-          "Something went wrong",
-          400,
-          "Something went wrong",
-          error
-        ),
-      };
-    }
-    return { data: { message: "Something went wrong" }, error: null };
+            return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
+      }
+      return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong','Something went wrong')}
   }
 
-  async checkOutUser(
-    siteId: string,
-    workerId: string
-  ): Promise<{ data: Object | null; error: IError | null }> {
+  //Check-Out worker
+  async checkOutUser(siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
       const workerData = await CheckingModel.findOne({
         userType: "worker",
@@ -141,13 +129,10 @@ class GeoLocation {
     }
   }
 
-  async getLocationOfConstructionSite(
-    siteId: string
-  ): Promise<{ data: ILocation | null; error: IError | null }> {
-    try {
-      const constructionSite = await ConstructionSiteModel.findOne({
-        companyId: siteId,
-      });
+  //Get location of construction site
+  async getLocationOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
+    try {      
+      const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
 
       if (!constructionSite) {
         return {
@@ -218,10 +203,8 @@ class GeoLocation {
     return distanceInKm <= actualRadius;
   }
 
-  // async getSafeZoneOfConstructionSite(siteId: string):  Promise<ILocation | { error: string }> {
-  async getSafeZoneOfConstructionSite(
-    siteId: string
-  ): Promise<{ data: ILocation | null; error: IError | null }> {
+ // Get the safe zone of construction site
+  async getSafeZoneOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
     try {
       const constructionSite = await ConstructionSiteModel.findOne({
         companyId: siteId,
@@ -312,16 +295,25 @@ class GeoLocation {
         ),
       };
     }
-    return {
-      data: null,
-      error: new ApplicationError(
-        "Something went wrong",
-        400,
-        "Something went wrong",
-        "Something went wrong"
-      ),
-    };
+    return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong','Something went wrong')}
+  }   
+
+  //Get checked-in workers of construction site
+  async getWorkersCheckedIn(siteId: string): Promise<{ data: IChecking[] | null, error: IError | null }> {
+    try {
+      const workersCheckedIn = await CheckingModel.find({ constructionSiteId: siteId }).lean().exec();
+  
+      if (!workersCheckedIn || workersCheckedIn.length === 0) {
+        return { data: null, error: new ApplicationError('Data unavailable', 400, 'Data unavailable', 'Data unavailable') };
+      }          
+      return { data: workersCheckedIn as IChecking[], error: null };
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
   }
 }
+
+
+
 
 export default GeoLocation;
