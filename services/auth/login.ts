@@ -1,5 +1,5 @@
-import Authentication from "./auth";
-import User from '../../models/user.model';
+import Authentication from "./auth.js";
+import User from '../../models/user.model.js';
 // ========================================
 
 class LoginService extends Authentication {
@@ -13,7 +13,9 @@ class LoginService extends Authentication {
     // Authenticate user using AuthService methods
       const isAuthenticated = await Authentication.authenticateUser(userId, password);
       if (!isAuthenticated) {
+        console.log('Invalid credentials');
         return false;
+        
       }
 
     // Generate JWT token using AuthService method
@@ -24,6 +26,7 @@ class LoginService extends Authentication {
       return false;
     }
   }
+  
 }
 
 export default LoginService;

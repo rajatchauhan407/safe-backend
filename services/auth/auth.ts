@@ -32,8 +32,9 @@ class Authentication{
         if (!user) {
           return false;
         }
-        const salt = "salt"
-        const hashedPassword = this.hashPassword(password, salt);
+        const findSalt = user.salt || '';
+        console.log('findSalt', findSalt);
+        const hashedPassword = this.hashPassword(password, findSalt );
         return hashedPassword === user.password;
       }
 

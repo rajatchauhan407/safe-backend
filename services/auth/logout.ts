@@ -1,4 +1,4 @@
-import Authentication from "./auth";
+import Authentication from "./auth.js";
 import { Request, Response } from 'express';
 // ========================================
 
