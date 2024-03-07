@@ -3,9 +3,13 @@ import { ILocation } from './location.interface';
 import { IUser } from './user.interface';
 import { Document } from 'mongoose';
 import { IEmergencySituation } from './emergencySituation.interface';
+import { EmergencyType } from '../enums/emergencyType.enum';
+import { DegreeOfEmergency } from '../enums/degreeOfEmergency.enum';
 export interface IAlert extends Document{
     role:Role;
-    userId:IUser['_id'];
+    userId:IUser['userId'];
+    emergencyType:EmergencyType;
+    degreeOfEmergency?:DegreeOfEmergency;
     alertLocation:ILocation;
     emergencySituationId:IEmergencySituation['_id'];
     emergencyNotification:boolean;
@@ -15,4 +19,6 @@ export interface IAlert extends Document{
     recipients?:IUser[];
     emergencyText?:string;
     resolved:boolean;
+    assistance:boolean;
+    imageUrl?:string;
 }
