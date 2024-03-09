@@ -39,16 +39,11 @@ class GeoLocation {
           userLocation.longitude,
           coordinates[0],
           coordinates[1],
-          constructionSiteLocation.radius
+          radius
         );
 
         console.log("isWithinRadius: " + isWithinRadius);
-        //hardcoded for testing - when the diff is more than 0.5 km
-        //const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7178, -74.0060, { type: 0.5 });
-
-        //hardcoded for testing - when the diff is within 0.5 km
-        //const isWithinRadius = await this.calculateDistanceAndCheckRadius(40.7128, -74.0060, 40.7168, -74.0061, { type: 0.5 });
-
+     
         if (isWithinRadius) {
           // If the location is within the radius, do check in & return a success message
           // Check if worker data exists
@@ -57,24 +52,25 @@ class GeoLocation {
             userId: workerId,
             constructionSiteId: siteId,
           });
-
+          let currentDate = new Date();
           if (workerData) {
             // If worker data exists, update checkType and timeStamp
             workerData.checkType = "check-in";
-            workerData.timeStamp = new Date();
+            workerData.timeStamp = currentDate;
             await workerData.save();
           } else {
             // If worker data doesn't exist, insert new data
+           
             const checkIn = new CheckingModel({
               userType: "worker",
               checkType: "check-in",
               userId: workerId,
               constructionSiteId: siteId,
-              timeStamp: new Date(),
+              timeStamp: currentDate,
             });
             await checkIn.save();
           }
-          return { data: { message: "check in successful" }, error: null };
+          return { data: { message: "check in successful",time: currentDate}, error: null };
         } else {
           // If the location is outside the radius
           return {
@@ -169,11 +165,6 @@ class GeoLocation {
   ): Promise<boolean> {
     // Convert radius in meters to kilometers;
     const actualRadius = Number(radius) / 1000;
-    console.log("radius: " + actualRadius);
-    console.log("userLatitude: " + userLatitude);
-    console.log("userLongitude: " + userLongitude);
-    console.log("siteLatitude: " + siteLatitude);
-    console.log("siteLongitude: " + siteLongitude);
     const earthRadius: number = 6371; // Earth's radius in kilometers
     const deg2rad: (deg: number) => number = (deg: number) =>
       deg * (Math.PI / 180);
