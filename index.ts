@@ -5,6 +5,9 @@ import express, { Application, Request, Response,NextFunction } from 'express';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
+import {Server as HttpServer} from 'http';
+import {Server as SocketIOServer} from 'socket.io';
+
 
 /*=============================================
 =            import custom modules          =
@@ -28,11 +31,20 @@ dotenv.config();
 
 class Server {
     private app:Application;
-
+    private httpServer:HttpServer;
+    private io:SocketIOServer;
     constructor() {
         this.app = express();
+        this.httpServer = new HttpServer(this.app); // wrapping the express app with Http Server
+        this.io = new SocketIOServer(this.httpServer,{
+            cors:{
+                origin:"*",
+                methods:["GET","POST"]
+            }
+        }); // wrapping the http server with socket.io
         this.setUpMiddlewares();
         this.setRoutes();
+        this.setupSocket();
         this.app.use(this.errorHandler.bind(this));
     }
 
@@ -58,6 +70,14 @@ setUpMiddlewares():void {
     });
     }
 
+  setupSocket():void {
+    this.io.on('connection',(socket)=>{
+        console.log('new connection')
+        socket.on('disconnect',()=>{
+            console.log('user disconnected')
+        })
+    })
+  }
   // error handler
     private errorHandler(err: IError, req: Request, res: Response, next: NextFunction): void {
       // logger.error(err.stack);
@@ -89,7 +109,7 @@ setUpMiddlewares():void {
     public async startServer(port:number):Promise<void> {
         try{
           await connectToMongoDB();
-          this.app.listen(port, () => 
+          this.httpServer.listen(port, () => 
           {     
             //   logger.warn(
             // 'checking'
