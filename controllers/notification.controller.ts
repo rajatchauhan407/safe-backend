@@ -26,7 +26,7 @@ class NotificationController {
       console.log('alertId:', alertId);
       const alert = await AlertService.getInstance().cancelAlert(alertId);
       if (alert instanceof ApplicationError) {
-        return res.status(404).json(alert);
+        throw alert;
       }
       res.status(200).json({
         message: 'Alert cancelled successfully',
