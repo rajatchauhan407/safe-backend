@@ -8,7 +8,11 @@ class NotificationController {
   async createAlert(req: Request, res: Response, next: NextFunction) {
     try {
       const alertData = req.body;
+      console.log('alertData:', alertData);
       const newAlert = await AlertService.getInstance().createAlert(alertData);
+      if (newAlert instanceof ApplicationError) {
+        throw newAlert;
+      }
       res.status(201).json(newAlert);
     } catch (error) {
       next(error);
