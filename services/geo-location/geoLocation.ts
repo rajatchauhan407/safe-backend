@@ -1,8 +1,12 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
 import CheckingModel from "../../models/checks.model.js";
+import ConstructionSite from '../../models/constructionSite.model.js';
+import User from '../../models/user.model.js'
 import {IChecking} from "../../shared/interfaces/checks.interface"
+import {IConstructionSite} from "../../shared/interfaces/constructionSite.interface"
 import {IError} from "../../shared/interfaces/error.interface";
+import {IUser} from "../../shared/interfaces/user.interface"
 import ApplicationError from "../../errors/applicationError.js";
 class GeoLocation {
   
@@ -298,6 +302,41 @@ class GeoLocation {
         return { data: null, error: new ApplicationError('Data unavailable', 400, 'Data unavailable', 'Data unavailable') };
       }          
       return { data: workersCheckedIn as IChecking[], error: null };
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+  }
+
+  //Get workers data of construction site
+  //async getWorkersData(siteId: string): Promise<{ data: IUser[] | null, error: IError | null }> {    
+    async getWorkersData(siteId: string): Promise<{ data: { workersData: IUser[], workersCheckedIn: IChecking[] } | null, error: IError | null }> {
+    try {
+      const constructionSite = await ConstructionSite.findOne({ companyId: siteId });  
+      if (!constructionSite) {
+        return { data: null, error: new ApplicationError('Construction site not found', 400, 'Construction site not found', 'Construction site not found') };
+      } 
+       
+      if (!constructionSite.workers) {
+        return { data: { workersData: [], workersCheckedIn: [] }, error: null }; // If workers array is undefined, return empty data
+      }         
+      const checkedInWorkersResponse = await this.getWorkersCheckedIn(siteId);
+        const checkedInWorkers = checkedInWorkersResponse.data || [];
+
+      // Collect user details along with their jobPosition
+      const userDataPromises = constructionSite.workers.map(async (worker: IUser) => {
+        try {
+          // Find the user by ID
+          const user = await User.findOne({ _id: worker._id }).exec();
+          return user;
+        } catch (error) {
+          // Handle errors if user is not found or any other error occurs
+          console.error(`Error fetching user details: ${error}`);
+          return { data: null, error: new ApplicationError('Error fetching user details', 400, 'Error fetching user details', error) };
+        }
+      });
+
+      const userData = await Promise.all(userDataPromises);        
+      return { data: {workersData: userData.filter(user => user) as IUser[], workersCheckedIn: checkedInWorkers}, error: null };      
     } catch (error) {
       return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
     }
