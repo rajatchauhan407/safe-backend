@@ -2,17 +2,26 @@ import { Application } from "twilio/lib/twiml/VoiceResponse.js";
 import AlertService from "../services/notifications/alert.js";
 import { Request, Response, NextFunction } from "express";
 import ApplicationError from "../errors/applicationError.js";
+
 class NotificationController {
 
   // create an alert
   async createAlert(req: Request, res: Response, next: NextFunction) {
     try {
+      const notificationService = req.app.get('notificationService');
       const alertData = req.body;
       console.log('alertData:', alertData);
+
+      
       const newAlert = await AlertService.getInstance().createAlert(alertData);
+      // sending alert to the supervisor
+      notificationService.alertSupervisor('New Alert');
       if (newAlert instanceof ApplicationError) {
         throw newAlert;
       }
+
+      
+      
       res.status(201).json(newAlert);
     } catch (error) {
       next(error);

@@ -8,7 +8,6 @@ import cors from 'cors';
 import {Server as HttpServer} from 'http';
 import {Server as SocketIOServer} from 'socket.io';
 
-
 /*=============================================
 =            import custom modules          =
 =============================================*/
@@ -24,6 +23,7 @@ import CompanyRoutes from './routes/company.route.js'
 import { IError } from './shared/interfaces/error.interface';
 import smsNotificationRoute from './routes/smsNotificationRoute.js';
 import loginLogout from './routes/loginLogoutRoute.js';
+import NotificationService from './services/notifications/notifications.js';
 // Load environment variables
 dotenv.config();
 
@@ -33,18 +33,27 @@ class Server {
     private app:Application;
     private httpServer:HttpServer;
     private io:SocketIOServer;
+    public notificationService:NotificationService;
     constructor() {
         this.app = express();
         this.httpServer = new HttpServer(this.app); // wrapping the express app with Http Server
         this.io = new SocketIOServer(this.httpServer,{
-            cors:{
-                origin:"*",
-                methods:["GET","POST"]
-            }
+          cors:{
+            origin:"*",
+            methods:["GET","POST"]
+          }
         }); // wrapping the http server with socket.io
+        this.setupSocket();
         this.setUpMiddlewares();
         this.setRoutes();
-        this.setupSocket();
+
+        // initializing notification service and setting it to the app
+        this.notificationService = new NotificationService(this.io);
+
+        // passing the notification service to the app so that it can be accessed from anywhere in the app
+        this.app.set('notificationService',this.notificationService);
+
+        // Error Handler
         this.app.use(this.errorHandler.bind(this));
     }
 
