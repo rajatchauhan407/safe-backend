@@ -50,6 +50,17 @@ class GeoLocationController{
         }
     }
 
+    async getWorkersData(req: Request, res: Response, next: NextFunction) {
+        let data = req.body;
+        try {
+            console.log(data.siteId)
+            const result = await geo.getWorkersData(data.siteId);
+            res.json(result);
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 const geoLocationController = new GeoLocationController();
