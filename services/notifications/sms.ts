@@ -8,7 +8,7 @@ const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPohoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-class SMSService extends NotificationService{
+class SMSService{
   
     // public twilioClient: Twilio;
     public twilioClient: any;
@@ -17,7 +17,7 @@ class SMSService extends NotificationService{
     // public emergencyContactName: string = 'Emergency Contact';
 
     constructor() {
-      super();
+      // super();
         // this.twilioClient = new Twilio(accountSid, authToken);
         this.twilioClient = twilio(accountSid, authToken);
       }
