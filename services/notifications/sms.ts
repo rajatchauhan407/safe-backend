@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import EmergencyContact from '../../models/emergencyContact.model.js';
+// import EmergencyContact from '../../models/emergencyContact.model.js';
 import dotenv from 'dotenv';
 import NotificationService from './notifications.js';
 // ========================================
@@ -12,7 +12,7 @@ class SMSService extends NotificationService{
   
     // public twilioClient: Twilio;
     public twilioClient: any;
-    public messageText: string = 'Emergency Alert';
+    // public messageText: string = 'Emergency Alert';
     // public emergencyContact: string = '+16047206967';
     // public emergencyContactName: string = 'Emergency Contact';
 
@@ -21,24 +21,30 @@ class SMSService extends NotificationService{
         // this.twilioClient = new Twilio(accountSid, authToken);
         this.twilioClient = twilio(accountSid, authToken);
       }
+    // ==========================================
+    // This method can be used if we want to connect the EmergencyContact model to the SMS service
+    //  ||
+    // \\// 
+    //  \/
+    //   async emergencyContactCall(messageText: string): Promise<void> {
+    //     try {
+    //         // Fetch emergency contacts from MongoDB
+    //         const emergencyContacts = await EmergencyContact.find({}, 'phoneNumber');
 
-      async emergencyContactCall(messageText: string): Promise<void> {
-        try {
-            // Fetch emergency contacts from MongoDB
-            const emergencyContacts = await EmergencyContact.find({}, 'phoneNumber');
+    //         // Sending SMS to each emergency contact
+    //         for (const contact of emergencyContacts) {
+    //             await this.sendEmergencySMS(contact.phoneNumber, messageText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error sending SMS:', error);
+    //     }
+    // }
+    // ======== End of the method
+    // ==========================================
 
-            // Sending SMS to each emergency contact
-            for (const contact of emergencyContacts) {
-                await this.sendEmergencySMS(contact.phoneNumber, messageText);
-            }
-        } catch (error) {
-            console.error('Error sending SMS:', error);
-        }
-    }
       async sendEmergencySMS(recipientNumber: string, messageText: string): Promise<void> {
         try {
           const response = await this.twilioClient.messages.create({
-            // body: 'Emergency Alert',
             body: messageText,
             // to: '+16047206967',
             to: recipientNumber,
@@ -48,6 +54,7 @@ class SMSService extends NotificationService{
           console.log('SMS sent successfully:', response);
         } catch (error) {
           console.error('Error sending SMS:', error);
+          throw error;
         }
       }
     
