@@ -20,6 +20,7 @@ class AuthController {
 async login(req: Request, res: Response, next: NextFunction) {
   try {
     const { userId, password } = req.body;
+    console.log(req.body)
     const token = await LoginService.login(userId, password);
     if(token instanceof ApplicationError){
       throw token
