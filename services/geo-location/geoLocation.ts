@@ -1,7 +1,6 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
 import CheckingModel from "../../models/checks.model.js";
-import ConstructionSite from '../../models/constructionSite.model.js';
 import User from '../../models/user.model.js'
 import {IChecking} from "../../shared/interfaces/checks.interface"
 import {IConstructionSite} from "../../shared/interfaces/constructionSite.interface"
@@ -132,7 +131,7 @@ class GeoLocation {
   //Get location of construction site
   async getLocationOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
     try {      
-      const constructionSite = await ConstructionSiteModel.findOne({ companyId: siteId });
+      const constructionSite = await ConstructionSiteModel.findOne({ _id: siteId });
 
       if (!constructionSite) {
         return {
@@ -202,7 +201,7 @@ class GeoLocation {
   async getSafeZoneOfConstructionSite(siteId: string):  Promise<{data:ILocation | null, error:IError|null}> {
     try {
       const constructionSite = await ConstructionSiteModel.findOne({
-        companyId: siteId,
+        _id: siteId,
       });
 
       if (!constructionSite) {
@@ -296,7 +295,7 @@ class GeoLocation {
   //Get checked-in workers of construction site
   async getWorkersCheckedIn(siteId: string): Promise<{ data: IChecking[] | null, error: IError | null }> {
     try {
-      const workersCheckedIn = await CheckingModel.find({ constructionSiteId: siteId }).lean().exec();
+      const workersCheckedIn = await CheckingModel.find({ constructionSiteId: siteId, checkType: "check-in" }).lean().exec();
   
       if (!workersCheckedIn || workersCheckedIn.length === 0) {
         return { data: null, error: new ApplicationError('Data unavailable', 400, 'Data unavailable', 'Data unavailable') };
@@ -311,16 +310,20 @@ class GeoLocation {
   //async getWorkersData(siteId: string): Promise<{ data: IUser[] | null, error: IError | null }> {    
     async getWorkersData(siteId: string): Promise<{ data: { workersData: IUser[], workersCheckedIn: IChecking[] } | null, error: IError | null }> {
     try {
-      const constructionSite = await ConstructionSite.findOne({ companyId: siteId });  
+      console.log("Site ID from frontend: "+siteId);
+      const constructionSite = await ConstructionSiteModel.findOne({ _id: siteId });  
       if (!constructionSite) {
         return { data: null, error: new ApplicationError('Construction site not found', 400, 'Construction site not found', 'Construction site not found') };
       } 
-       
+       console.log("Construction site workers>> "+constructionSite.workers?.length)
       if (!constructionSite.workers) {
+        console.log("comes here")
         return { data: { workersData: [], workersCheckedIn: [] }, error: null }; // If workers array is undefined, return empty data
       }         
       const checkedInWorkersResponse = await this.getWorkersCheckedIn(siteId);
         const checkedInWorkers = checkedInWorkersResponse.data || [];
+
+        console.log(checkedInWorkers)
 
       // Collect user details along with their jobPosition
       const userDataPromises = constructionSite.workers.map(async (worker: IUser) => {
@@ -335,7 +338,8 @@ class GeoLocation {
         }
       });
 
-      const userData = await Promise.all(userDataPromises);        
+      const userData = await Promise.all(userDataPromises); 
+     
       return { data: {workersData: userData.filter(user => user) as IUser[], workersCheckedIn: checkedInWorkers}, error: null };      
     } catch (error) {
       return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
