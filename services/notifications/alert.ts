@@ -3,11 +3,11 @@ import { IAlert } from "../../shared/interfaces/alert.interface";
 import NotificationService from "./notifications.js";
 import ApplicationError from "../../errors/applicationError.js";
 import { IError } from "../../shared/interfaces/error.interface.js";
-class AlertService extends NotificationService{
+class AlertService{
   private static instance: AlertService;
-  private constructor() {
-    super();
-  }
+  // private constructor() {
+  //   super();
+  // }
   public static getInstance() {
     if (!AlertService.instance) {
       AlertService.instance = new AlertService();
