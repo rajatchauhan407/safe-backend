@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { IConstructionSite } from './constructionSite.interface';
 
 export interface IUserWithout extends Document{
-    constructionSiteId?: IConstructionSite['_id'];
+    constructionSiteId?: string;
     role:Role;
     userId: string;
     userName: string;
