@@ -2,7 +2,7 @@ import {model, Schema} from "mongoose";
 import { IUser } from "../shared/interfaces/user.interface";
 
 const userSchema = new Schema<IUser>({
-    constructionSiteId: {type: String, required: true},
+    constructionSiteId: {type: String},
     role: {type:String , required: true},
     userId: {type: String, required: true},
     userName: {type: String, required: true},
