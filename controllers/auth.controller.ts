@@ -47,6 +47,22 @@ async logout(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
+
+// verifyToken ===============================================
+
+async verifyToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log(token)
+    if (!token) {
+      throw new ApplicationError('Token not found', 401, 'Token not found', 'token not found');
+    }
+    const isAuthed = await LoginService.validateToken(token);
+    res.status(200).json({isAuthed});
+  } catch (error) {
+    next(error);
+  }
+}
 }
 
 const authController = new AuthController();

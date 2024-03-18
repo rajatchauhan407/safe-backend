@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import User from '../../models/user.model.js';
 import jwt, { Secret } from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import ApplicationError from '../../errors/applicationError.js';
 dotenv.config();
 // ========================================
 
@@ -36,6 +37,21 @@ class Authentication{
         console.log('findSalt', findSalt);
         const hashedPassword = this.hashPassword(password, findSalt );
         return hashedPassword === user.password;
+      }
+
+    // Validate Token
+
+    static async validateToken(token: string): Promise<boolean> {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error('JWT_SECRET not found');
+        }
+        try {
+          jwt.verify(token, secret);
+          return true;
+        } catch (error) {
+          throw new ApplicationError('Invalid Token', 401, 'Invalid Token', 'invalid token');
+        }
       }
 
     }
