@@ -70,6 +70,21 @@ class CompanyService{
                         }
     }
 }
+
+ //Get Site Name 
+ async getSiteName(siteId: string): Promise<{ data: String | null, error: IError | null }> {
+    try {
+      const site = await ConstructionSite.findOne({ _id: siteId}).lean().exec();
+  
+      if (!site) {
+        return { data: null, error: new ApplicationError('Construction Site unavailable', 400, 'Construction Site unavailable', 'Construction Site unavailable') };
+      }  
+      let siteName =`${site.address.street}, ${site.address.city}`     
+      return { data: siteName as String, error: null };
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+  }
 }
 
 export default CompanyService;
