@@ -75,5 +75,19 @@ class CompanyController{
           next(error);
         }
       }
+      public async getSiteList(req:Request, res:Response, next:NextFunction) {
+        try {
+          let data = req.body;
+          const siteName = await new CompanyService().getSiteList();
+          console.log(siteName)
+          if(siteName.error){
+            next(siteName.error);
+          }else{
+            res.status(201).json(siteName.data);
+          }
+        } catch (error) {
+          next(error);
+        }
+      }
     }
 export default new CompanyController();

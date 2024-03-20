@@ -85,6 +85,24 @@ class CompanyService{
       return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
     }
   }
+
+  async getSiteList(): Promise<{ data: { _id: string, name: string }[] | null, error: IError | null }> {
+    try {
+        const sites = await ConstructionSite.find({}, '_id name address.street address.city').lean().exec();
+  
+        if (!sites || sites.length === 0) {
+            return { data: null, error: new ApplicationError('Construction Sites unavailable', 400, 'Construction Sites unavailable', 'Construction Sites unavailable') };
+        }  
+
+        const siteList = sites.map(site => ({ _id: site._id.toString(), name: `${site.address.street}, ${site.address.city}` }));
+        console.log(siteList);
+        return { data: siteList, error: null };
+    } catch (error) {
+        return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+}
+
+
 }
 
 export default CompanyService;
