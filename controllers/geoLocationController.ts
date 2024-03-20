@@ -61,6 +61,17 @@ class GeoLocationController{
         }
     }
 
+    async checkedStatusOfWorker(req: Request, res: Response, next: NextFunction) {
+        let data = req.body;
+        try {
+            console.log(data.workerId);
+            const result = await geo.getCheckedStatus(data.workerId);
+            res.json(result);
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 const geoLocationController = new GeoLocationController();
