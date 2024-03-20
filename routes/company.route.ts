@@ -9,5 +9,6 @@ router.post('/site', CompanyController.createSite);
 router.post('/emergency-contact', CompanyController.createEmergencyContact);
 router.post('/emergency-situation', CompanyController.createEmergencySituation);
 router.post('/sitename',CompanyController.getSiteName)
+router.get('/sitelist',CompanyController.getSiteList)
 
 export default router;
