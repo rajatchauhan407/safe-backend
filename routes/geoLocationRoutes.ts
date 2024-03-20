@@ -8,5 +8,6 @@ router.post("/checkout",geoLocationController.checkOutUser)
 router.get("/getsafezone",geoLocationController.getSafeZone)
 router.get("/safezonecheck",geoLocationController.checkIfUserInSafeZone)
 router.post("/workersdata",geoLocationController.getWorkersData)
+router.post("/workerstatus",geoLocationController.checkedStatusOfWorker)
 
 export default router;

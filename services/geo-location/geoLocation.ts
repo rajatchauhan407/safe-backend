@@ -345,6 +345,20 @@ class GeoLocation {
       return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
     }
   }
+
+   //Get check-in/check-out status of worker
+   async getCheckedStatus(workerId: string): Promise<{ data: IChecking[] | null, error: IError | null }> {
+    try {
+      const workerStatus = await CheckingModel.find({ userId: workerId}).lean().exec();
+  
+      if (!workerStatus || workerStatus.length === 0) {
+        return { data: null, error: new ApplicationError('Data unavailable', 400, 'Data unavailable', 'Data unavailable') };
+      }          
+      return { data: workerStatus as IChecking[], error: null };
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+  }
 }
 
 
