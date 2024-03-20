@@ -8,5 +8,6 @@ router.post('/company', CompanyController.createCompany);
 router.post('/site', CompanyController.createSite);
 router.post('/emergency-contact', CompanyController.createEmergencyContact);
 router.post('/emergency-situation', CompanyController.createEmergencySituation);
+router.post('/sitename',CompanyController.getSiteName)
 
 export default router;
