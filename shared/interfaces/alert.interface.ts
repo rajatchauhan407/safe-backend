@@ -9,8 +9,10 @@ export interface IAlert extends Document{
     role:Role;
     userId:IUser['userId'];
     emergencyType:EmergencyType;
+    reportingFor:string;
     degreeOfEmergency?:DegreeOfEmergency;
     alertLocation:ILocation;
+    workersInjured:number;
     emergencySituationId:IEmergencySituation['_id'];
     emergencyNotification:boolean;
     timestamp:Date;

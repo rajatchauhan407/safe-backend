@@ -15,13 +15,10 @@ class NotificationController {
       
       const newAlert = await AlertService.getInstance().createAlert(alertData);
       // sending alert to the supervisor
-      notificationService.alertSupervisor('New Alert');
+      notificationService.alertSupervisor(newAlert);
       if (newAlert instanceof ApplicationError) {
         throw newAlert;
       }
-
-      
-      
       res.status(201).json(newAlert);
     } catch (error) {
       next(error);
