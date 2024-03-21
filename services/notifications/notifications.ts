@@ -7,7 +7,7 @@ class NotificationService {
   }
 
   // alert supervisor
-  public alertSupervisor(alertData:any){
+  public alertSupervisor(alertData:IAlert){
     console.log('alertData:',alertData)
     this.io.emit('alert',alertData);
   }

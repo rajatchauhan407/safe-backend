@@ -24,6 +24,7 @@ import { IError } from './shared/interfaces/error.interface';
 import smsNotificationRoute from './routes/smsNotificationRoute.js';
 import loginLogout from './routes/loginLogoutRoute.js';
 import NotificationService from './services/notifications/notifications.js';
+import ApplicationError from './errors/applicationError.js';
 // Load environment variables
 dotenv.config();
 
@@ -49,7 +50,6 @@ class Server {
 
         // initializing notification service and setting it to the app
         this.notificationService = new NotificationService(this.io);
-
         // passing the notification service to the app so that it can be accessed from anywhere in the app
         this.app.set('notificationService',this.notificationService);
 
@@ -88,11 +88,15 @@ setUpMiddlewares():void {
     })
   }
   // error handler
-    private errorHandler(err: IError, req: Request, res: Response, next: NextFunction): void {
+    private errorHandler(err:any, req: Request, res: Response, next: NextFunction): void {
       // logger.error(err.stack);
       // console.log("hello")
       console.log(err)
+      if(err instanceof ApplicationError){
       res.status(err.statusCode).json({ error: err.error,statusCode:err.statusCode,details: process.env.Node_ENV=="development"?err.details:null});
+      }else{
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
     }
 
   //  versioning routes

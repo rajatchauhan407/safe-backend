@@ -50,6 +50,20 @@ class AlertService{
       return new ApplicationError('Cannot Cancel Alert', 400, 'Cannot cancel Alert',error);
     }
   }
+
+  public async getAlert(constructionSiteId:string):Promise<IAlert | IError>{
+    try {
+      const alert = await Alert.find({constructionSiteId,resolved:false}).sort({timestamp:-1}).limit(1);
+      console.log(alert[0])
+      return alert[0];
+    } catch (error:unknown) {
+      if (error instanceof ApplicationError) {
+        return error;
+      }
+      return new ApplicationError('Cannot get alerts', 400, 'Cannot get alerts',error);
+    }
+
+  }
 }
 
 export default AlertService;
