@@ -72,6 +72,26 @@ class GeoLocationController{
         }
     }
 
+    async getSafeZoneWorkersData(req: Request, res: Response, next: NextFunction) {
+        let data = req.body;
+        try {
+            console.log(data.siteId)
+            const result = await geo.getWorkersinSafeZoneData(data.siteId);
+            res.json(result);
+        } catch (error) {
+            next(error)
+        }
+    }
+    async createSafeZoneWorker(req: Request, res: Response, next: NextFunction) {
+        let data = req.body;
+        try {
+            const result = await geo.createSafeZoneWorker(data.siteId, data.workerId);
+            res.json(result);
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 const geoLocationController = new GeoLocationController();
