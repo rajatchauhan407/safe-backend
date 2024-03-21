@@ -1,8 +1,10 @@
 import ConstructionSiteModel from "../../models/constructionSite.model.js";
 import { ILocation } from "../../shared/interfaces/location.interface";
 import CheckingModel from "../../models/checks.model.js";
+import SafeZoneWorkerModel from "../../models/safezoneworkers.model.js"
 import User from '../../models/user.model.js'
 import {IChecking} from "../../shared/interfaces/checks.interface"
+import {ISafeZoneWorkers} from "../..//shared/interfaces/safezone.interface.js"
 import {IConstructionSite} from "../../shared/interfaces/constructionSite.interface"
 import {IError} from "../../shared/interfaces/error.interface";
 import {IUser} from "../../shared/interfaces/user.interface"
@@ -113,6 +115,13 @@ class GeoLocation {
         });
         await checkOut.save(); // Save the new document
       }
+
+      // Remove worker data from SafeZoneWorkerModel
+      await SafeZoneWorkerModel.deleteOne({
+      userType: "worker",
+      userId: workerId,
+      constructionSiteId: siteId,
+      });
 
       return { data: { message: "check out successful" }, error: null };
     } catch (error) {
@@ -359,6 +368,87 @@ class GeoLocation {
       return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
     }
   }
+
+  //Get safezone workers of construction site
+  async getSafeZoneWorkers(siteId: string): Promise<{ data: ISafeZoneWorkers[] | null, error: IError | null }> {
+    try {
+      const workersInSafeZone = await SafeZoneWorkerModel.find({ constructionSiteId: siteId }).lean().exec();
+  
+      if (!workersInSafeZone || workersInSafeZone.length === 0) {
+        return { data: null, error: new ApplicationError('Data unavailable', 400, 'Data unavailable', 'Data unavailable') };
+      }          
+      return { data: workersInSafeZone as ISafeZoneWorkers[], error: null };
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+  }
+
+  async getWorkersinSafeZoneData(siteId: string): Promise<{ data: { workersData: IUser[], safeZoneWorkers: ISafeZoneWorkers[] } | null, error: IError | null }> {
+    try {
+      console.log("Site ID from frontend: "+siteId);
+      const constructionSite = await ConstructionSiteModel.findOne({ _id: siteId });  
+      if (!constructionSite) {
+        return { data: null, error: new ApplicationError('Construction site not found', 400, 'Construction site not found', 'Construction site not found') };
+      } 
+       console.log("Construction site workers>> "+constructionSite.workers?.length)
+      if (!constructionSite.workers) {
+        console.log("comes here")
+        return { data: { workersData: [], safeZoneWorkers: [] }, error: null }; // If workers array is undefined, return empty data
+      }         
+      const safeZoneWorkersResponse = await this.getSafeZoneWorkers(siteId);
+        const safeZoneWorkers = safeZoneWorkersResponse.data || [];
+
+        console.log(safeZoneWorkers)
+
+      // Collect user details along with their jobPosition
+      const userDataPromises = constructionSite.workers.map(async (worker: IUser) => {
+        try {
+          // Find the user by ID
+          const user = await User.findOne({ _id: worker._id }).exec();
+          return user;
+        } catch (error) {
+          // Handle errors if user is not found or any other error occurs
+          console.error(`Error fetching user details: ${error}`);
+          return { data: null, error: new ApplicationError('Error fetching user details', 400, 'Error fetching user details', error) };
+        }
+      });
+
+      const userData = await Promise.all(userDataPromises); 
+     
+      return { data: {workersData: userData.filter(user => user) as IUser[], safeZoneWorkers: safeZoneWorkers}, error: null };      
+    } catch (error) {
+      return { data: null, error: new ApplicationError('Something went wrong', 400, 'Something went wrong', error) };
+    }
+  }
+
+  //Create safezone worker
+  async createSafeZoneWorker(siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
+    try {
+      
+        // If worker data doesn't exist, insert new data
+        const safeZoneWorker = new SafeZoneWorkerModel({
+          userType: "worker",
+          userId: workerId,
+          constructionSiteId: siteId,
+          timeStamp: new Date(),
+        });
+        await safeZoneWorker.save(); 
+      
+
+      return { data: { message: "Safe Zone Worker Created" }, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: new ApplicationError(
+          "Something went wrong",
+          400,
+          "Something went wrong",
+          error
+        ),
+      };
+    }
+  }
+
 }
 
 
