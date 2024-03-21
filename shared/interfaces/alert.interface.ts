@@ -8,6 +8,7 @@ import { DegreeOfEmergency } from '../enums/degreeOfEmergency.enum';
 export interface IAlert extends Document{
     role:Role;
     userId:IUser['userId'];
+    constructionSiteId:string;
     emergencyType:EmergencyType;
     reportingFor:string;
     degreeOfEmergency?:DegreeOfEmergency;

@@ -4,6 +4,7 @@ import { IAlert } from "../shared/interfaces/alert.interface";
 const alertSchema = new Schema<IAlert>({
   role: { type: String, required: true },
   userId: { type: String, ref: "User", required: true },
+  constructionSiteId: { type: String, required:true},
   reportingFor: { type: String, required: true },
   emergencyType: { type: String, required: true },
   degreeOfEmergency: { type: Number, required: true},

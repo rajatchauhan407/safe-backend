@@ -10,6 +10,7 @@ class NotificationController {
     try {
       const notificationService = req.app.get('notificationService');
       const alertData = req.body;
+      alertData.needAssistance = alertData.needAssistance === 'true' ? true : false;
       console.log('alertData:', alertData);
 
       
@@ -38,6 +39,24 @@ class NotificationController {
         message: 'Alert cancelled successfully',
         alert,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get an alert
+  public async getAlert(req: Request, res: Response, next: NextFunction) {
+    try {
+      // console.log(req.body);
+      const constructionSiteId = req.query.constructionSiteId as string;
+      // console.log('params', req.query);  
+      // console.log('constructionSiteId:', req.body.constructionSiteId);
+      const alert = await AlertService.getInstance().getAlert(constructionSiteId);
+      if (alert instanceof ApplicationError) {
+        throw alert;
+      }
+      res.status(200).json(alert);
+      
     } catch (error) {
       next(error);
     }
