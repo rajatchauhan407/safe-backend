@@ -10,4 +10,8 @@ router.get('/alert/:alertId',NotificationController.cancelAlert);
 
 router.get('/alert',NotificationController.getAlert);
 
+router.post('/alert-worker',NotificationController.alertWorker);
+
+router.get('/alert-worker',NotificationController.getWorkerAlert);
+
 export default router;

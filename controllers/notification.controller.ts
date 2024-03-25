@@ -2,6 +2,7 @@ import { Application } from "twilio/lib/twiml/VoiceResponse.js";
 import AlertService from "../services/notifications/alert.js";
 import { Request, Response, NextFunction } from "express";
 import ApplicationError from "../errors/applicationError.js";
+import { IAlert } from "../shared/interfaces/alert.interface.js";
 
 class NotificationController {
 
@@ -58,6 +59,51 @@ class NotificationController {
       res.status(200).json(alert);
       
     } catch (error) {
+      next(error);
+    }
+  }
+
+  public async getWorkerAlert(req: Request, res: Response, next: NextFunction) {
+    try {
+      // console.log(req.body);
+      const constructionSiteId = req.query.constructionSiteId as string;
+      // console.log('params', req.query);  
+      // console.log('constructionSiteId:', req.body.constructionSiteId);
+      const alert = await AlertService.getInstance().getWorkerAlert(constructionSiteId);
+      if (alert instanceof ApplicationError) {
+        throw alert;
+      }
+      res.status(200).json(alert);
+      
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async alertWorker(req: Request, res: Response, next: NextFunction) {
+    try{
+      const notificationService = req.app.get('notificationService');
+      const alertData = req.body;
+      console.log('alertData:',alertData);
+
+      const alert = await AlertService.getInstance().getAlert(alertData.constructionSiteId);
+      if(alert instanceof ApplicationError){
+        throw alert;
+      }
+      if('_id' in alert ){
+        const newAlert = AlertService.getInstance().updateAlertBySupervisor(alert._id, {
+          supervisorId:alertData.supervisorId,
+          actionType:alertData.action
+        });
+        if(newAlert instanceof ApplicationError){
+          throw newAlert;
+        }
+        // sending alert to the worker
+        notificationService.alertWorker(newAlert);
+        res.status(200).json({message:'Alert sent to the worker', updatedAlert:newAlert});
+
+      }
+    }catch(error){
       next(error);
     }
   }

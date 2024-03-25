@@ -5,6 +5,7 @@ import { Document } from 'mongoose';
 import { IEmergencySituation } from './emergencySituation.interface';
 import { EmergencyType } from '../enums/emergencyType.enum';
 import { DegreeOfEmergency } from '../enums/degreeOfEmergency.enum';
+import {IAction} from './action.interface';
 export interface IAlert extends Document{
     role:Role;
     userId:IUser['userId'];
@@ -17,7 +18,7 @@ export interface IAlert extends Document{
     emergencySituationId:IEmergencySituation['_id'];
     emergencyNotification:boolean;
     timestamp:Date;
-    responseAction?:string;
+    responseAction?:IAction;
     followUpAction?:string;
     recipients?:IUser[];
     emergencyText?:string;
