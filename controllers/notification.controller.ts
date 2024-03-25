@@ -2,6 +2,7 @@ import { Application } from "twilio/lib/twiml/VoiceResponse.js";
 import AlertService from "../services/notifications/alert.js";
 import { Request, Response, NextFunction } from "express";
 import ApplicationError from "../errors/applicationError.js";
+import { IAlert } from "../shared/interfaces/alert.interface.js";
 
 class NotificationController {
 
@@ -90,11 +91,17 @@ class NotificationController {
         throw alert;
       }
       if('_id' in alert ){
-        AlertService.getInstance().updateAlertBySupervisor(alert._id, {
+        const newAlert = AlertService.getInstance().updateAlertBySupervisor(alert._id, {
           supervisorId:alertData.supervisorId,
           actionType:alertData.action
         });
-        res.status(200).json({message:'Alert sent to the worker', updatedAlert:alert});
+        if(newAlert instanceof ApplicationError){
+          throw newAlert;
+        }
+        // sending alert to the worker
+        notificationService.alertWorker(newAlert);
+        res.status(200).json({message:'Alert sent to the worker', updatedAlert:newAlert});
+
       }
     }catch(error){
       next(error);
