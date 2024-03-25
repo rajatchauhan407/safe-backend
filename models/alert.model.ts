@@ -11,7 +11,7 @@ const alertSchema = new Schema<IAlert>({
   alertLocation: { type: Object, required: true },
   workersInjured: { type: Number, required: true },
   timestamp: { type: Date, required: true },
-  responseAction: { type: String },
+  responseAction: { type: Object, default: null},
   followUpAction: { type: String },
   recipients: [{ type: Schema.Types.ObjectId, ref: "User" }],
   emergencyText: { type: String},
