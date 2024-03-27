@@ -425,6 +425,17 @@ class GeoLocation {
   async createSafeZoneWorker(siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
       
+      const existingSafeZoneWorker = await SafeZoneWorkerModel.findOne({
+        userType: "worker",
+        userId: workerId,
+        constructionSiteId: siteId,
+      });
+      let currentDate = new Date();
+      if (existingSafeZoneWorker) {
+        // If worker data exists, update checkType and timeStamp
+        existingSafeZoneWorker.timeStamp = currentDate;
+        await existingSafeZoneWorker.save();
+      } else {
         // If worker data doesn't exist, insert new data
         const safeZoneWorker = new SafeZoneWorkerModel({
           userType: "worker",
@@ -433,8 +444,7 @@ class GeoLocation {
           timeStamp: new Date(),
         });
         await safeZoneWorker.save(); 
-      
-
+      }
       return { data: { message: "Safe Zone Worker Created" }, error: null };
     } catch (error) {
       return {

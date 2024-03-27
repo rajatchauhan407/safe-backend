@@ -1,9 +1,11 @@
 import Alert from "../../models/alert.model.js";
+import SOSAlert from "../../models/sosalert.model.js"
 import { IAlert } from "../../shared/interfaces/alert.interface";
 import NotificationService from "./notifications.js";
 import ApplicationError from "../../errors/applicationError.js";
 import { IError } from "../../shared/interfaces/error.interface.js";
 import { IAction } from "../../shared/interfaces/action.interface.js";
+import {ISOSAlert} from "../../shared/interfaces/sosalert.interface"
 class AlertService {
   private static instance: AlertService;
   // private constructor() {
@@ -152,6 +154,34 @@ class AlertService {
       );
     }
   }
+
+    // create SOS alert
+    public async createSOSAlert(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<ISOSAlert | IError> {
+      try {
+        const timestamp = new Date();
+        //const sosAlert = new SOSAlert({ options, timestamp });
+        const sosAlert = new SOSAlert({
+
+          role: "worker",
+          userId: workerId,
+          constructionSiteId: siteId,
+          alertLocation: userLocation,
+          timestamp: new Date()
+        });
+        await sosAlert.save();
+        return sosAlert;
+      } catch (err: unknown) {
+        if (err instanceof ApplicationError) {
+          return err;
+        }
+        return new ApplicationError(
+          "Cannot create SOS Alert",
+          500,
+          "Can not create SOS Alert",
+          err
+        );
+      }
+    }
 }
 
 export default AlertService;

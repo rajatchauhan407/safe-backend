@@ -107,6 +107,25 @@ class NotificationController {
       next(error);
     }
   }
+
+  // create SOS
+  async createSOSAlert(req: Request, res: Response, next: NextFunction) {
+    try {      
+      const data = req.body;  
+      const notificationService = req.app.get('notificationService');   
+      console.log('SOSAlertData:', data);      
+      const newAlert = await AlertService.getInstance().createSOSAlert(data.location, data.siteId, data.workerId);
+      // sending alert to the supervisor
+      notificationService.alertSupervisor(newAlert);
+      if (newAlert instanceof ApplicationError) {
+        throw newAlert;
+      }
+      res.status(201).json(newAlert);
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 
 
