@@ -21,7 +21,7 @@ class NotificationController {
       if (req.body.photo) {
          
         const fileName = `${new Date().toISOString()}-alert-${req.body.constructionSiteId}`;
-        const imageUrl = await uploadDataToS3(fileName, req.body.image.data, req.body.image.ext);
+        const imageUrl = await uploadDataToS3(fileName, req.body.photo, 'jpeg');
         alertData.imageUrl = imageUrl;
       }
       
