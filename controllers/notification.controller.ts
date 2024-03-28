@@ -2,7 +2,8 @@ import { Application } from "twilio/lib/twiml/VoiceResponse.js";
 import AlertService from "../services/notifications/alert.js";
 import { Request, Response, NextFunction } from "express";
 import ApplicationError from "../errors/applicationError.js";
-import { IAlert } from "../shared/interfaces/alert.interface.js";
+import uploadDataToS3 from "../utils/s3/uploadToS3.js";
+
 
 class NotificationController {
 
@@ -10,12 +11,22 @@ class NotificationController {
   async createAlert(req: Request, res: Response, next: NextFunction) {
     try {
       const notificationService = req.app.get('notificationService');
+      // console.log('body req',req);
+      // console.log('body',req.body._parts[0]);
+
+      
       const alertData = req.body;
       alertData.needAssistance = alertData.needAssistance === 'true' ? true : false;
       console.log('alertData:', alertData);
-
+      if (req.body.photo) {
+         
+        const fileName = `${new Date().toISOString()}-alert-${req.body.constructionSiteId}`;
+        const imageUrl = await uploadDataToS3(fileName, req.body.image.data, req.body.image.ext);
+        alertData.imageUrl = imageUrl;
+      }
       
       const newAlert = await AlertService.getInstance().createAlert(alertData);
+      
       // sending alert to the supervisor
       notificationService.alertSupervisor(newAlert);
       if (newAlert instanceof ApplicationError) {
