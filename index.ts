@@ -22,6 +22,7 @@ import NotificationRoutes from './routes/notification.route.js'
 import CompanyRoutes from './routes/company.route.js'
 import { IError } from './shared/interfaces/error.interface';
 import smsNotificationRoute from './routes/smsNotificationRoute.js';
+import getSMSTextDetails from './routes/smsNotificationRoute.js';
 import loginLogout from './routes/loginLogoutRoute.js';
 import NotificationService from './services/notifications/notifications.js';
 import ApplicationError from './errors/applicationError.js';
@@ -115,6 +116,7 @@ setUpMiddlewares():void {
     router.use(CompanyRoutes);
     router.use(smsNotificationRoute);
     router.use(loginLogout);
+    router.use(getSMSTextDetails);
    
     return router;
 }
