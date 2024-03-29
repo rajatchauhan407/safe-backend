@@ -17,6 +17,7 @@ const alertSchema = new Schema<IAlert>({
   emergencyText: { type: String},
   resolved: { type: Boolean, required: true, default: false},
   assistance: { type: Boolean, required: true },
+  smsSent: { type: Boolean, required: true, default: false},
   imageUrl: { type: String },
 });
 
