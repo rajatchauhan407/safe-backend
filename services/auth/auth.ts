@@ -53,7 +53,6 @@ class Authentication{
           throw new ApplicationError('Invalid Token', 401, 'Invalid Token', 'invalid token');
         }
       }
-
     }
     
 export default Authentication;

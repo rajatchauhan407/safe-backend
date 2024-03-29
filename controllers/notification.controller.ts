@@ -19,7 +19,7 @@ class NotificationController {
       alertData.needAssistance = alertData.needAssistance === 'true' ? true : false;
       console.log('alertData:', alertData);
       if (req.body.photo) {
-         
+  
         const fileName = `${new Date().toISOString()}-alert-${req.body.constructionSiteId}`;
         const imageUrl = await uploadDataToS3(fileName, req.body.photo, 'jpeg');
         alertData.imageUrl = imageUrl;
