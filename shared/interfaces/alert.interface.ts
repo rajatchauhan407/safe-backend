@@ -24,5 +24,6 @@ export interface IAlert extends Document{
     emergencyText?:string;
     resolved:boolean;
     assistance:boolean;
+    smsSent:boolean;
     imageUrl?:string;
 }
