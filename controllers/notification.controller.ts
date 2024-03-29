@@ -3,7 +3,8 @@ import AlertService from "../services/notifications/alert.js";
 import { Request, Response, NextFunction } from "express";
 import ApplicationError from "../errors/applicationError.js";
 import uploadDataToS3 from "../utils/s3/uploadToS3.js";
-
+import LoginService from "../services/auth/login.js";
+import {Expo} from 'expo-server-sdk';
 
 class NotificationController {
 
@@ -91,7 +92,10 @@ class NotificationController {
     }
   }
 
+
   public async alertWorker(req: Request, res: Response, next: NextFunction) {
+    /** Initializing alert worker ****/
+    
     try{
       const notificationService = req.app.get('notificationService');
       const alertData = req.body;
@@ -110,7 +114,23 @@ class NotificationController {
           throw newAlert;
         }
         // sending alert to the worker
-        notificationService.alertWorker(newAlert);
+        await notificationService.alertWorker(newAlert);
+
+
+        const pushTokenData = await LoginService.retrieveTokens(alertData.constructionSiteId);
+
+        console.log('pushTokenData:',pushTokenData);
+        
+        if(pushTokenData instanceof ApplicationError){
+          throw pushTokenData;
+        }
+
+        if(Array.isArray(pushTokenData)){
+          for(const token of pushTokenData){
+            await notificationService.sendPushNotification(token.token, newAlert);
+          }
+        }
+        
         res.status(200).json({message:'Alert sent to the worker', updatedAlert:newAlert});
 
       }
