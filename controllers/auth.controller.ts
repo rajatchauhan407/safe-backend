@@ -15,13 +15,12 @@ class AuthController {
       next(error);
     }
   }
-
 // LOGIN ===============================================
 async login(req: Request, res: Response, next: NextFunction) {
   try {
-    const { userId, password } = req.body;
-    console.log(req.body)
-    const token = await LoginService.login(userId, password);
+    const { userId, password, role } = req.body;
+    console.log(req.body);
+    const token = await LoginService.login(userId, password, role);
     if(token instanceof ApplicationError){
       throw token
     }
@@ -49,7 +48,6 @@ async logout(req: Request, res: Response, next: NextFunction) {
 }
 
 // verifyToken ===============================================
-
 async verifyToken(req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.headers.authorization?.split(' ')[1];

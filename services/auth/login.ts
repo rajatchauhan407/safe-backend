@@ -5,15 +5,15 @@ import { IError } from "../../shared/interfaces/error.interface.js";
 // ========================================
 
 class LoginService extends Authentication {
-    static async login(userId: string, password: string): Promise<string | null | boolean | IError> {
+    static async login(userId: string, password: string, role: string): Promise<string | null | boolean | IError> {
         try {
           const user = await User.findOne({ userId });
           if (!user) {
-            throw new ApplicationError('User Not Found',404,'User Not Found','Hey be careful');
+            throw new ApplicationError('User Not Found',404,'User Not Found','Wrong Credentials');
           }
     
     // Authenticate user using AuthService methods
-      const isAuthenticated = await Authentication.authenticateUser(userId, password);
+      const isAuthenticated = await Authentication.authenticateUser(userId, password, role);
       if (!isAuthenticated) {
         console.log('Invalid credentials');
         throw new ApplicationError('Invalid credentials',404,'Invalid Credentials','error details')
