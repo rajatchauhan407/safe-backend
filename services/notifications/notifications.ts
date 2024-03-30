@@ -32,8 +32,10 @@ class NotificationService {
      // Construct a message (for more advanced messages, you might include a URL, sound, etc.)
   messages.push({
     to: pushToken,
-    sound: 'default' as const, // Specify the sound as "default" using the 'as const' assertion
-    body: 'Alert! There is an emergency at the construction site. Please check the app for more details.',
+    notification:{
+      sound: 'notificationsound.wav', // Specify the sound as "default" using the 'as const' assertion
+      body: 'Alert! There is an emergency at the construction site. Please check the app for more details.',
+    },
     data: { alertData: alertData },
   });
   // The Expo push notification service accepts batches of notifications so
