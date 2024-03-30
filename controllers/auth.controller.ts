@@ -61,6 +61,26 @@ async verifyToken(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
+  async storeToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tokenData = req.body;
+      console.log(tokenData);
+      const token = await LoginService.storeToken(tokenData);
+      res.status(201).json({message:'Token stored successfully',token});
+    } catch (error) {
+      next(error);
+    }
+  }
+  async deleteToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {userId} = req.body;
+      console.log(userId)
+      const deletedToken = await LoginService.deleteToken(userId);
+      res.status(200).json({message:'Token deleted successfully',deletedToken});
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 const authController = new AuthController();
