@@ -9,7 +9,13 @@ import {IConstructionSite} from "../../shared/interfaces/constructionSite.interf
 import {IError} from "../../shared/interfaces/error.interface";
 import {IUser} from "../../shared/interfaces/user.interface"
 import ApplicationError from "../../errors/applicationError.js";
-class GeoLocation {
+import {Server as SocketIOServer} from 'socket.io';
+
+class GeoLocation { 
+  public io:SocketIOServer;
+  constructor(io:SocketIOServer){
+    this.io = io;
+  }
   
   //Check-In worker
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
@@ -75,6 +81,7 @@ class GeoLocation {
             });
             await checkIn.save();
           }
+          this.io.emit('usercheckedin',true);
           return { data: { message: "check in successful",time: currentDate}, error: null };
         } else {
           // If the location is outside the radius
@@ -83,7 +90,7 @@ class GeoLocation {
             error: null,
           };
         }
-      }
+      }      
     } catch (error) {
             return {data:null, error:new ApplicationError('Something went wrong',400,'Something went wrong',error)}
       }
@@ -122,7 +129,7 @@ class GeoLocation {
       userId: workerId,
       constructionSiteId: siteId,
       });
-
+      this.io.emit('usercheckedout',true);
       return { data: { message: "check out successful" }, error: null };
     } catch (error) {
       return {
@@ -316,7 +323,6 @@ class GeoLocation {
   }
 
   //Get workers data of construction site
-  //async getWorkersData(siteId: string): Promise<{ data: IUser[] | null, error: IError | null }> {    
     async getWorkersData(siteId: string): Promise<{ data: { workersData: IUser[], workersCheckedIn: IChecking[] } | null, error: IError | null }> {
     try {
       console.log("Site ID from frontend: "+siteId);
@@ -445,6 +451,7 @@ class GeoLocation {
         });
         await safeZoneWorker.save(); 
       }
+      this.io.emit('safezoneworker',true);
       return { data: { message: "Safe Zone Worker Created" }, error: null };
     } catch (error) {
       return {

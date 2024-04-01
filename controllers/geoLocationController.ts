@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Express from "express";
 import GeoLocation from '../services/geo-location/geoLocation.js'; 
+import { Server as SocketIOServer } from 'socket.io';
 const app = Express();
-const geo = new GeoLocation(); 
+const io = new SocketIOServer(); 
+const geo = new GeoLocation(io); 
 
 class GeoLocationController{
     
