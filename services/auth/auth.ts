@@ -28,15 +28,16 @@ class Authentication{
     }
       
     // Authenticate User
-    static async authenticateUser(userId: string, password: string): Promise<boolean> {
+    static async authenticateUser(userId: string, password: string, role: string): Promise<boolean> {
         const user = await User.findOne({ userId });
         if (!user) {
           return false;
         }
         const findSalt = user.salt || '';
         console.log('findSalt', findSalt);
+        const roleMatch = user.role === role;
         const hashedPassword = this.hashPassword(password, findSalt );
-        return hashedPassword === user.password;
+        return hashedPassword === user.password && roleMatch;
       }
 
     // Validate Token
