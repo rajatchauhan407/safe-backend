@@ -17,4 +17,6 @@ router.get('/alert-worker',NotificationController.getWorkerAlert);
 
 router.post('/sosalert', NotificationController.createSOSAlert);
 
+router.post('/supervisor-alert', NotificationController.createAlertBySupervisor);
+
 export default router;

@@ -32,6 +32,7 @@ class NotificationService {
      // Construct a message (for more advanced messages, you might include a URL, sound, etc.)
   messages.push({
     to: pushToken,
+    name:'default',
     sound: 'default' as const, // Specify the sound as "default" using the 'as const' assertion
     body: 'Alert! There is an emergency at the construction site. Please check the app for more details.',
     data: { alertData: alertData },
@@ -49,7 +50,9 @@ class NotificationService {
       console.error(error);
     }
   }
-  }
+
+
+}
 }   
 
 export default NotificationService;

@@ -7,7 +7,7 @@ const alertSchema = new Schema<IAlert>({
   constructionSiteId: { type: String, required:true},
   reportingFor: { type: String, required: true },
   emergencyType: { type: String, required: true },
-  degreeOfEmergency: { type: Number, required: true},
+  degreeOfEmergency: { type: Number},
   alertLocation: { type: Object, required: true },
   workersInjured: { type: Number, required: true },
   timestamp: { type: Date, required: true },
@@ -16,7 +16,7 @@ const alertSchema = new Schema<IAlert>({
   recipients: [{ type: Schema.Types.ObjectId, ref: "User" }],
   emergencyText: { type: String},
   resolved: { type: Boolean, required: true, default: false},
-  assistance: { type: Boolean, required: true },
+  assistance: { type: Boolean},
   smsSent: { type: Boolean, required: true, default: false},
   imageUrl: { type: String },
 });
