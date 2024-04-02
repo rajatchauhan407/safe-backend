@@ -1,18 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import Express from "express";
 import GeoLocation from '../services/geo-location/geoLocation.js'; 
-import { Server as SocketIOServer } from 'socket.io';
+
 const app = Express();
-const io = new SocketIOServer(); 
-const geo = new GeoLocation(io); 
+const geo = new GeoLocation(); 
 
 class GeoLocationController{
     
     async checkInUser(req: Request, res: Response, next: NextFunction) {
         let data = req.body;
         try {
+            const notificationService = req.app.get('notificationService');
             console.log(data.location);
             const result = await geo.checkInUser(data.location, data.siteId, data.workerId);
+            notificationService.workerStatusAlert();
             res.json(result);
         } catch (error) {
             next(error)
@@ -22,8 +23,10 @@ class GeoLocationController{
     async checkOutUser(req: Request, res: Response, next: NextFunction) {
         let data = req.body;
         try {
+            const notificationService = req.app.get('notificationService');
             console.log(data.location);
             const result = await geo.checkOutUser(data.siteId, data.workerId);
+            notificationService.workerStatusAlert();
             res.json(result);
         } catch (error) {
             next(error)
@@ -87,7 +90,9 @@ class GeoLocationController{
     async createSafeZoneWorker(req: Request, res: Response, next: NextFunction) {
         let data = req.body;
         try {
+            const notificationService = req.app.get('notificationService');
             const result = await geo.createSafeZoneWorker(data.siteId, data.workerId);
+            notificationService.safeZoneWorkerStatusAlert();
             res.json(result);
         } catch (error) {
             next(error)

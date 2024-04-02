@@ -12,15 +12,10 @@ import ApplicationError from "../../errors/applicationError.js";
 import {Server as SocketIOServer} from 'socket.io';
 
 class GeoLocation { 
-  public io:SocketIOServer;
-  constructor(io:SocketIOServer){
-    this.io = io;
-  }
   
   //Check-In worker
   async checkInUser(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<{data:Object | null, error:IError|null}> {
     try {
-      
       const constructionSiteResult = await this.getLocationOfConstructionSite(siteId);
 
       if (constructionSiteResult.error) {
@@ -81,7 +76,6 @@ class GeoLocation {
             });
             await checkIn.save();
           }
-          this.io.emit('usercheckedin',true);
           return { data: { message: "check in successful",time: currentDate}, error: null };
         } else {
           // If the location is outside the radius
@@ -129,7 +123,6 @@ class GeoLocation {
       userId: workerId,
       constructionSiteId: siteId,
       });
-      this.io.emit('usercheckedout',true);
       return { data: { message: "check out successful" }, error: null };
     } catch (error) {
       return {
@@ -451,7 +444,6 @@ class GeoLocation {
         });
         await safeZoneWorker.save(); 
       }
-      this.io.emit('safezoneworker',true);
       return { data: { message: "Safe Zone Worker Created" }, error: null };
     } catch (error) {
       return {

@@ -19,6 +19,17 @@ class NotificationService {
     this.io.emit('alertWorker',true);
   }
 
+  public workerStatusAlert()
+  {
+    console.log('In workerStatusAlert')
+    this.io.emit('workerstatus',true);
+  }
+
+  public safeZoneWorkerStatusAlert()
+  {
+    console.log('In safeZoneWorkerStatusAlert')
+    this.io.emit('safezoneworker',true);
+  }
    /****  Sending Push notifications to all the users ****/
   public async sendPushNotification(pushToken:string,alertData:IAlert){
     let expo = new Expo();
