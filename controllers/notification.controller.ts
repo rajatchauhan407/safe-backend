@@ -39,6 +39,40 @@ class NotificationController {
     }
   }
 
+// create alert by supervisor`
+async createAlertBySupervisor(req: Request, res: Response, next: NextFunction) {
+  try {
+    const notificationService = req.app.get('notificationService');
+    console.log('body req',req);
+    // console.log('body',req.body._parts[0]);
+    
+    const alertData = req.body;
+    alertData.needAssistance = alertData.needAssistance === 'true' ? true : false;
+    alertData.resolved = true;
+    console.log('alertData:', alertData);
+    if (req.body.photo) {
+
+      const fileName = `${new Date().toISOString()}-alert-${req.body.constructionSiteId}`;
+      const imageUrl = await uploadDataToS3(fileName, req.body.photo, 'jpeg');
+      alertData.imageUrl = imageUrl;
+    }
+    
+    const newAlert = await AlertService.getInstance().createAlert(alertData);
+    
+    // sending alert to the supervisor
+    notificationService.alertSupervisor(newAlert);
+    if (newAlert instanceof ApplicationError) {
+      throw newAlert;
+    }
+    res.status(201).json(newAlert);
+  } catch (error) {
+    console.log(error)
+    next(error);
+  }
+}
+
+
+
 // cancel an alert
   public async cancelAlert(req: Request, res: Response, next: NextFunction) {
     try {

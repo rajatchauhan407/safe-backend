@@ -36,7 +36,27 @@ class AlertService {
       );
     }
   }
-
+// create alert by supervisor
+public async createAlertBySupervisor(
+ options: IAlert
+): Promise<IAlert | IError> {
+  try {
+    const timestamp = new Date();
+    const alert = new Alert({...options, timestamp });
+    await alert.save();
+    return alert;
+  } catch (err: unknown) {
+    if (err instanceof ApplicationError) {
+      return err;
+    }
+    return new ApplicationError(
+      "Cannot create alert",
+      500,
+      "Can not create Alert",
+      err
+    );
+  }
+}
   // cancel an alert
   public async cancelAlert(alertId: string): Promise<IAlert | IError | null> {
     try {
@@ -182,6 +202,8 @@ class AlertService {
         );
       }
     }
+
+  
 }
 
 export default AlertService;
