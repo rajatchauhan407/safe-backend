@@ -26,4 +26,5 @@ export interface IAlert extends Document{
     assistance:boolean;
     smsSent:boolean;
     imageUrl?:string;
+    location:string;
 }

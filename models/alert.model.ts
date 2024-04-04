@@ -19,6 +19,7 @@ const alertSchema = new Schema<IAlert>({
   assistance: { type: Boolean},
   smsSent: { type: Boolean, required: true, default: false},
   imageUrl: { type: String },
+  location:{type:String},
 });
 
 export default model<IAlert>("Alert", alertSchema);
