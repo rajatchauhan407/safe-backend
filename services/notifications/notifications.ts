@@ -44,12 +44,11 @@ class NotificationService {
      // Construct a message (for more advanced messages, you might include a URL, sound, etc.)
   messages.push({
     to: pushToken,
-    name:'default',
+    name:'E-mail notifications',
     sound: 'default' as const, // Specify the sound as "default" using the 'as const' assertion
     priority:'high' as const,
     title: 'Alert from Construction Site',
-    body: `${alertData.emergencyType ? alertData.emergencyType : 'Alert'} Emergency. Workers Injured: ${alertData.workersInjured}.`,
-    data: { alertData: alertData },
+    body: `${alertData.emergencyType ? alertData.emergencyType : 'Alert'} Emergency.There is an alert emergency at the construction site. Please check the alert.`,
     channelId: 'alert-notification',
   });
   // The Expo push notification service accepts batches of notifications so
