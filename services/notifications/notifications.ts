@@ -45,7 +45,9 @@ class NotificationService {
     to: pushToken,
     name:'default',
     sound: 'default' as const, // Specify the sound as "default" using the 'as const' assertion
-    body: 'Alert! There is an emergency at the construction site. Please check the app for more details.',
+    priority:'high' as const,
+    title: 'Alert from Construction Site',
+    body: `${alertData.emergencyType ? alertData.emergencyType : 'Alert'} Emergency. Workers Injured: ${alertData.workersInjured}.`,
     data: { alertData: alertData },
   });
   // The Expo push notification service accepts batches of notifications so
