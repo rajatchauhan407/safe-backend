@@ -2,6 +2,7 @@ import {Server as SocketIOServer} from 'socket.io';
 import {IAlert} from '../../shared/interfaces/alert.interface';
 import { IExpoToken } from '../../shared/interfaces/expoToken.interface';
 import {Expo} from 'expo-server-sdk';
+import { channel } from 'diagnostics_channel';
 class NotificationService {
   public io:SocketIOServer;
   constructor(io:SocketIOServer){
@@ -49,6 +50,7 @@ class NotificationService {
     title: 'Alert from Construction Site',
     body: `${alertData.emergencyType ? alertData.emergencyType : 'Alert'} Emergency. Workers Injured: ${alertData.workersInjured}.`,
     data: { alertData: alertData },
+    channelId: 'alert-notification',
   });
   // The Expo push notification service accepts batches of notifications so
   // that you don't need to send 1000 requests individually!
