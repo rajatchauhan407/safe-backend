@@ -50,7 +50,7 @@ class NotificationService {
     title: 'Alert from Construction Site',
     body: `${alertData.emergencyType ? alertData.emergencyType : 'Alert'} Emergency. Workers Injured: ${alertData.workersInjured}.`,
     data: { alertData: alertData },
-    channelId: 'alert',
+    channelId: 'alert-notification',
   });
   // The Expo push notification service accepts batches of notifications so
   // that you don't need to send 1000 requests individually!
