@@ -161,6 +161,7 @@ async createAlertBySupervisor(req: Request, res: Response, next: NextFunction) {
 
         if(Array.isArray(pushTokenData)){
           for(const token of pushTokenData){
+            await notificationService.alertWorker(newAlert);
             await notificationService.sendPushNotification(token.token, newAlert);
           }
         }
