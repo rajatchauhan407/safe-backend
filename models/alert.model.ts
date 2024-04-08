@@ -5,11 +5,11 @@ const alertSchema = new Schema<IAlert>({
   role: { type: String, required: true },
   userId: { type: String, ref: "User", required: true },
   constructionSiteId: { type: String, required:true},
-  reportingFor: { type: String, required: true },
-  emergencyType: { type: String, required: true },
+  reportingFor: { type: String },
+  emergencyType: { type: String },
   degreeOfEmergency: { type: Number},
-  alertLocation: { type: Object, required: true },
-  workersInjured: { type: Number, required: true },
+  alertLocation: { type: Object},
+  workersInjured: { type: Number},
   timestamp: { type: Date, required: true },
   responseAction: { type: Object, default: null},
   followUpAction: { type: String },
@@ -20,6 +20,7 @@ const alertSchema = new Schema<IAlert>({
   smsSent: { type: Boolean, required: true, default: false},
   imageUrl: { type: String },
   location:{type:String},
+  sos: { type: Boolean, default:false},
 });
 
 export default model<IAlert>("Alert", alertSchema);

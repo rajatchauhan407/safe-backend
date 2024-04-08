@@ -191,6 +191,10 @@ async createAlertBySupervisor(req: Request, res: Response, next: NextFunction) {
     }
   }
 
+
+  // resolve SOS
+
+  
 }
 
 

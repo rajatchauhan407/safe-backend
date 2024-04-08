@@ -14,9 +14,9 @@ export interface IAlert extends Document{
     reportingFor:string;
     degreeOfEmergency?:DegreeOfEmergency;
     alertLocation:ILocation;
-    workersInjured:number;
-    emergencySituationId:IEmergencySituation['_id'];
-    emergencyNotification:boolean;
+    workersInjured?:number;
+    emergencySituationId?:IEmergencySituation['_id'];
+    emergencyNotification?:boolean;
     timestamp:Date;
     responseAction?:IAction;
     followUpAction?:string;
@@ -26,5 +26,6 @@ export interface IAlert extends Document{
     assistance:boolean;
     smsSent:boolean;
     imageUrl?:string;
-    location:string;
+    location?:string;
+    sos?:boolean;
 }

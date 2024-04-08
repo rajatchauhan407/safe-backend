@@ -19,4 +19,6 @@ router.post('/sosalert', NotificationController.createSOSAlert);
 
 router.post('/supervisor-alert', NotificationController.createAlertBySupervisor);
 
+router.post('/resolver-sos');
+
 export default router;
