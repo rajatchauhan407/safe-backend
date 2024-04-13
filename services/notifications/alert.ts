@@ -251,16 +251,7 @@ public async createAlertBySupervisor(
           "User not found in the database",
           "User not found in the database"
         );
-      }
-
-      // sosAlertData = [
-      //   `Name: ${user.firstName} ${user.lastName}`,
-      //   `Role: ${user.jobPosition}`,
-      //   `SiteID: ${sosAlert.constructionSiteId}`,
-      //   `latitude: ${latitude}`,
-      //   `longitude: ${longitude}`,
-      //   `Timestamp: ${sosAlert.timestamp}`
-      // ];
+      }     
       sosAlertData = {
         name: `${user.firstName} ${user.lastName}`,
         role: user.jobPosition,
