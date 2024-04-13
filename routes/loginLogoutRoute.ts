@@ -1,6 +1,8 @@
 import Express from 'express';
-const router = Express.Router();
+import validateJWT from '../shared/validations/validateJWT.js';
 import authController from '../controllers/auth.controller.js';
+const router = Express.Router();
+
 // ========================================================
 
 router.post('/login',authController.login);
