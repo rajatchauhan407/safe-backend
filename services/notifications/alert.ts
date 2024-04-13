@@ -208,9 +208,9 @@ public async createAlertBySupervisor(
     }
 
     // get SOS alert data
-    public async getSOSAlertInfo(): Promise<string[] | IError> {
+    public async getSOSAlertInfo(): Promise<object  | IError> {
       try {
-        let sosAlertData: string[] = [];
+        let sosAlertData ={ };
         const sosAlert = await SOSAlert.findOne();
      
     if (sosAlert) {
@@ -253,14 +253,22 @@ public async createAlertBySupervisor(
         );
       }
 
-      sosAlertData = [
-        `Name: ${user.firstName} ${user.lastName}`,
-        `Role: ${user.jobPosition}`,
-        `SiteID: ${sosAlert.constructionSiteId}`,
-        `latitude: ${latitude}`,
-        `longitude: ${longitude}`,
-        `Timestamp: ${sosAlert.timestamp}`
-      ];
+      // sosAlertData = [
+      //   `Name: ${user.firstName} ${user.lastName}`,
+      //   `Role: ${user.jobPosition}`,
+      //   `SiteID: ${sosAlert.constructionSiteId}`,
+      //   `latitude: ${latitude}`,
+      //   `longitude: ${longitude}`,
+      //   `Timestamp: ${sosAlert.timestamp}`
+      // ];
+      sosAlertData = {
+        name: `${user.firstName} ${user.lastName}`,
+        role: user.jobPosition,
+        siteId: sosAlert.constructionSiteId,
+        latitude: latitude,
+        longitude: longitude,
+        timestamp: sosAlert.timestamp
+      };
     }
     return sosAlertData;
   } catch (err: unknown) {
