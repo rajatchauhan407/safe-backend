@@ -191,6 +191,21 @@ async createAlertBySupervisor(req: Request, res: Response, next: NextFunction) {
     }
   }
 
+  // get SOS data
+  async getSOSAlertInfo(req: Request, res: Response, next: NextFunction) {
+    try {      
+      
+      const alertInfo = await AlertService.getInstance().getSOSAlertInfo();
+      // sending alert to the supervisor      
+      if (alertInfo instanceof ApplicationError) {
+        throw alertInfo;
+      }
+      res.status(201).json(alertInfo);
+    } catch (error) {
+      next(error);
+    }
+  }
+
 
   // resolve SOS
 
