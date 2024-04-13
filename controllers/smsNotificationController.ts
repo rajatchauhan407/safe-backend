@@ -74,9 +74,24 @@ class smsNotificationController{
         locationZip: constructionSite.address.zip,
         workersInjured: smsText.workersInjured,
         emergencyType: smsText.emergencyType,
+        emergencyLevel: smsText.degreeOfEmergency,
+        exactLocation: smsText.location,
       };
-      const textMessage = `EMERGENCY ALERT: ${smsTextDetails.workersInjured} workers injured at ${smsTextDetails.locationStreet}, ${smsTextDetails.locationCity}, ${smsTextDetails.locationProvince}, ${smsTextDetails.locationZip} due to ${smsTextDetails.emergencyType}.`;
+      
+      const textMessage = `!SAFE Alert! 
+      Number of Workers Injured: ${smsTextDetails.workersInjured}
+      Location: ${smsTextDetails.exactLocation} ${smsTextDetails.locationStreet}, ${smsTextDetails.locationCity}, ${smsTextDetails.locationProvince}, ${smsTextDetails.locationZip} 
+      Urgency Level: ${smsTextDetails.emergencyLevel}
+      Situation: ${smsTextDetails.emergencyType}
+      Immediate assistance required.
+      Please respond promptly.
+      Urgency Levels:
+      1 - Low urgency
+      2 - Moderate urgency
+      3 - High urgency`;
+
           res.status(200).json(textMessage);
+          console.log(textMessage);
           
         } catch (error) {
           next(error);
