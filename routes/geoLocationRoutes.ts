@@ -4,7 +4,7 @@ import geoLocationController from '../controllers/geoLocationController.js'
 
 const router = Express.Router();
 // Apply the validateJWT middleware for all routes in this router
-router.use(validateJWT);
+// router.use(validateJWT);
 
 router.post("/checkin",geoLocationController.checkInUser)
 router.post("/checkout",geoLocationController.checkOutUser)

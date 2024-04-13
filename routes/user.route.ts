@@ -4,7 +4,7 @@ import UserController from '../controllers/user.controller.js';
 
 const router = Express.Router();
 // Apply the validateJWT middleware for all routes in this router
-router.use(validateJWT);
+// router.use(validateJWT);
 
 router.get('/create',UserController.createUser);
 
