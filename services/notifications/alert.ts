@@ -1,5 +1,6 @@
 import Alert from "../../models/alert.model.js";
 import SOSAlert from "../../models/sosalert.model.js"
+import User from "../../models/user.model.js"
 import { IAlert } from "../../shared/interfaces/alert.interface";
 import NotificationService from "./notifications.js";
 import ApplicationError from "../../errors/applicationError.js";
@@ -179,6 +180,9 @@ public async createAlertBySupervisor(
     public async createSOSAlert(userLocation: { latitude: number, longitude: number}, siteId: string, workerId: string): Promise<ISOSAlert | IError> {
       try {
         const timestamp = new Date();
+
+         // Clear the SOSAlert collection
+        await SOSAlert.deleteMany({});
         //const sosAlert = new SOSAlert({ options, timestamp });
         const sosAlert = new SOSAlert({
 
@@ -203,6 +207,74 @@ public async createAlertBySupervisor(
       }
     }
 
+    // get SOS alert data
+    public async getSOSAlertInfo(): Promise<string[] | IError> {
+      try {
+        let sosAlertData: string[] = [];
+        const sosAlert = await SOSAlert.findOne();
+     
+    if (sosAlert) {
+
+      if (!sosAlert) {
+        return new ApplicationError(
+          "SOS Alert not found",
+          404,
+          "SOS Alert not found in the database",
+          "SOS Alert not found in the database"
+        );
+      }
+     
+    const locationString = JSON.stringify(sosAlert.alertLocation);
+
+    // Parse the string to extract latitude and longitude
+    const match = locationString.match(/"latitude":\s*"(.*?)",.*"longitude":\s*"(.*?)"/);
+
+    if (!match || match.length < 3) {
+      return new ApplicationError(
+        "Invalid location data",
+        400,
+        "Latitude or longitude not found in the location data",
+        "Latitude or longitude not found in the location data"
+      );
+    }
+
+    const latitude = parseFloat(match[1]);
+    const longitude = parseFloat(match[2]);
+  
+
+      const user = await User.findOne({ _id: sosAlert.userId });
+
+      if (!user) {
+        return new ApplicationError(
+          "User not found",
+          404,
+          "User not found in the database",
+          "User not found in the database"
+        );
+      }
+
+      sosAlertData = [
+        `Name: ${user.firstName} ${user.lastName}`,
+        `Role: ${user.jobPosition}`,
+        `SiteID: ${sosAlert.constructionSiteId}`,
+        `latitude: ${latitude}`,
+        `longitude: ${longitude}`,
+        `Timestamp: ${sosAlert.timestamp}`
+      ];
+    }
+    return sosAlertData;
+  } catch (err: unknown) {
+    if (err instanceof ApplicationError) {
+      return err;
+    }
+    return new ApplicationError(
+      "Cannot get SOS Alert data",
+      500,
+      "Can not get SOS Alert data",
+      err
+    );
+  }
+}
   
 }
 
