@@ -4,7 +4,7 @@ import NotificationController from '../controllers/notification.controller.js';
 
 const router = Express.Router();
 // Apply the validateJWT middleware for all routes in this router
-router.use(validateJWT);
+// router.use(validateJWT);
 
 router.post('/alert', NotificationController.createAlert);
 
