@@ -5,6 +5,7 @@ import ApplicationError from "../errors/applicationError.js";
 import uploadDataToS3 from "../utils/s3/uploadToS3.js";
 import LoginService from "../services/auth/login.js";
 import {Expo} from 'expo-server-sdk';
+import { IAlert } from "../shared/interfaces/alert.interface.js";
 
 class NotificationController {
 
@@ -28,6 +29,20 @@ class NotificationController {
       
       const newAlert = await AlertService.getInstance().createAlert(alertData);
       
+      const pushTokenData = await LoginService.retrieveSupervisorTokens((newAlert as IAlert).constructionSiteId, "supervisor");
+
+        console.log('pushTokenData:',pushTokenData);
+        
+        if(pushTokenData instanceof ApplicationError){
+          throw pushTokenData;
+        }
+
+        if(Array.isArray(pushTokenData)){
+          for(const token of pushTokenData){
+            await notificationService.sendPushNotification(token.token, newAlert);
+          }
+        }
+        
       // sending alert to the supervisor
       notificationService.alertSupervisor(newAlert);
       if (newAlert instanceof ApplicationError) {

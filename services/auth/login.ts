@@ -88,6 +88,40 @@ class LoginService extends Authentication {
     
 
   }
+  static async retrieveSupervisorTokens(constructionSiteId: string, role:string): Promise<IError | IExpoToken[]>{
+    try{
+
+      const users = await User.find({constructionSiteId,role});
+
+      if (!users) {
+        throw new ApplicationError('No users found',404,'No users found','details')
+      }
+
+      let allTokens: IExpoToken[] = [];
+
+      for(const user of users){
+        /** Retrieving Token for a particular Id */
+        const tokens = await expoTokenModel.find({userId:user.userId});
+        
+        if(!tokens){
+          throw new ApplicationError('No tokens found',404,'No tokens found','details')
+        }
+
+        /** Saving all the tokens in allTokens array **/
+        tokens.forEach(token => {
+          allTokens.push(token);
+        })
+      }
+      if(allTokens.length === 0){
+        throw new ApplicationError('No tokens found',404,'No tokens found','details')
+      }
+      return allTokens;
+    }catch(error){
+        throw new ApplicationError('Invalid Request',500,'internal server error','details')
+    }  
+    
+
+  }
 }
 
 export default LoginService;
