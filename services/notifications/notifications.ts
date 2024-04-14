@@ -64,9 +64,8 @@ class NotificationService {
       console.error(error);
     }
   }
-
-
 }
+
 }   
 
 export default NotificationService;
