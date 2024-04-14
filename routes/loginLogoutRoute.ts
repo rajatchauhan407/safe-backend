@@ -1,5 +1,5 @@
 import Express from 'express';
-import validateJWT from '../shared/validations/validateJWT.js';
+import validateJWT from '../middlewares/validateJWT.js';
 import authController from '../controllers/auth.controller.js';
 const router = Express.Router();
 
