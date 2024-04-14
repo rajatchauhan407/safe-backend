@@ -74,8 +74,23 @@ async createAlertBySupervisor(req: Request, res: Response, next: NextFunction) {
     
     const newAlert = await AlertService.getInstance().createAlert(alertData);
     
-    // sending alert to the supervisor
+    // sending alert to the workers
+    await notificationService.alertWorker(newAlert);
+    const pushTokenData = await LoginService.retrieveTokens(alertData.constructionSiteId);
+
+    console.log('pushTokenData:',pushTokenData);
+    
+    if(pushTokenData instanceof ApplicationError){
+      throw pushTokenData;
+    }
+
+    if(Array.isArray(pushTokenData)){
+      for(const token of pushTokenData){
+        await notificationService.sendPushNotification(token.token, newAlert);
+      }
+    }
     notificationService.alertSupervisor(newAlert);
+    
     if (newAlert instanceof ApplicationError) {
       throw newAlert;
     }
