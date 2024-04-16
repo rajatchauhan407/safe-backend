@@ -4,14 +4,14 @@ import UserController from '../controllers/user.controller.js';
 
 const router = Express.Router();
 
-router.get('/create',UserController.createUser);
+router.get('/create',validateJWT,UserController.createUser);
 
-router.put('/update/:userId',UserController.updateUser);
+router.put('/update/:userId',validateJWT,UserController.updateUser);
 
-router.get('/delete/:userId',UserController.deleteUser);
+router.get('/delete/:userId',validateJWT,UserController.deleteUser);
 
-router.get('/users',UserController.getUsers);
+router.get('/users',validateJWT,UserController.getUsers);
 
-router.get('/user/:userId',UserController.getUser);
+router.get('/user/:userId',validateJWT,UserController.getUser);
 
 export default router;
